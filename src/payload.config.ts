@@ -1,4 +1,5 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -36,11 +37,16 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URL || '',
-    },
-  }),
+  // Postgres in production — Vercel's filesystem is ephemeral, so a SQLite file
+  // would be wiped on every deploy. Picked from the connection string itself so
+  // there is no second flag to keep in sync; local dev stays on SQLite.
+  db: process.env.DATABASE_URL?.startsWith('postgres')
+    ? postgresAdapter({
+        pool: { connectionString: process.env.DATABASE_URL },
+      })
+    : sqliteAdapter({
+        client: { url: process.env.DATABASE_URL || '' },
+      }),
   sharp,
   plugins: [],
 })
