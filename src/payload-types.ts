@@ -69,9 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    trips: Trip;
     'payload-kv': PayloadKv;
-    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -80,9 +78,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    trips: TripsSelect<false> | TripsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -91,29 +87,15 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {
-    header: Header;
-    home: Home;
-    settings: Setting;
-  };
-  globalsSelect: {
-    header: HeaderSelect<false> | HeaderSelect<true>;
-    home: HomeSelect<false> | HomeSelect<true>;
-    settings: SettingsSelect<false> | SettingsSelect<true>;
-  };
+  globals: {};
+  globalsSelect: {};
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
   user: User;
   jobs: {
-    tasks: {
-      schedulePublish: TaskSchedulePublish;
-      inline: {
-        input: unknown;
-        output: unknown;
-      };
-    };
+    tasks: unknown;
     workflows: unknown;
   };
 }
@@ -181,36 +163,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "trips".
- */
-export interface Trip {
-  id: number;
-  place: string;
-  country: string;
-  /**
-   * One or two lines. Shown on the card, keep it under ~120 characters.
-   */
-  summary: string;
-  price: number;
-  nights: number;
-  rating: number;
-  /**
-   * Optional. Falls back to the colour treatment below when empty.
-   */
-  photo?: (number | null) | Media;
-  /**
-   * Used when there is no photo.
-   */
-  tone: 'aegean' | 'blossom' | 'sahara';
-  /**
-   * Lower numbers appear first.
-   */
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -228,98 +180,6 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-jobs".
- */
-export interface PayloadJob {
-  id: number;
-  /**
-   * Input data provided to the job
-   */
-  input?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  taskStatus?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  completedAt?: string | null;
-  totalTried?: number | null;
-  /**
-   * If hasError is true this job will not be retried
-   */
-  hasError?: boolean | null;
-  /**
-   * If hasError is true, this is the error that caused it
-   */
-  error?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * Task execution log
-   */
-  log?:
-    | {
-        executedAt: string;
-        completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
-        taskID: string;
-        input?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        output?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        state: 'failed' | 'succeeded';
-        error?:
-          | {
-              [k: string]: unknown;
-            }
-          | unknown[]
-          | string
-          | number
-          | boolean
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
-  queue?: string | null;
-  waitUntil?: string | null;
-  processing?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -332,10 +192,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'trips';
-        value: number | Trip;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -421,59 +277,11 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "trips_select".
- */
-export interface TripsSelect<T extends boolean = true> {
-  place?: T;
-  country?: T;
-  summary?: T;
-  price?: T;
-  nights?: T;
-  rating?: T;
-  photo?: T;
-  tone?: T;
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-jobs_select".
- */
-export interface PayloadJobsSelect<T extends boolean = true> {
-  input?: T;
-  taskStatus?: T;
-  completedAt?: T;
-  totalTried?: T;
-  hasError?: T;
-  error?: T;
-  log?:
-    | T
-    | {
-        executedAt?: T;
-        completedAt?: T;
-        taskSlug?: T;
-        taskID?: T;
-        input?: T;
-        output?: T;
-        state?: T;
-        error?: T;
-        id?: T;
-      };
-  taskSlug?: T;
-  queue?: T;
-  waitUntil?: T;
-  processing?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -509,166 +317,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header".
- */
-export interface Header {
-  id: number;
-  brand: string;
-  /**
-   * Drag to reorder. Untick "Visible" to pull one without deleting it.
-   */
-  navItems?:
-    | {
-        label: string;
-        href?: string | null;
-        enabled?: boolean | null;
-        /**
-         * Leave empty for a plain link. Add rows to turn this item into a dropdown menu.
-         */
-        dropdown?:
-          | {
-              label: string;
-              blurb?: string | null;
-              enabled?: boolean | null;
-              href?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  ctaLabel?: string | null;
-  ctaHref?: string | null;
-  ctaEnabled?: boolean | null;
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home".
- */
-export interface Home {
-  id: number;
-  /**
-   * Both designs use the same fields below.
-   */
-  variant: 'gradient' | 'editorial';
-  eyebrow?: string | null;
-  title: string;
-  /**
-   * Rendered in the gold italic.
-   */
-  titleAccent?: string | null;
-  lede?: string | null;
-  primaryCta?: string | null;
-  secondaryCta?: string | null;
-  /**
-   * Untick to hide it from the public site without deleting anything.
-   */
-  statsEnabled?: boolean | null;
-  /**
-   * Optional. Leave empty to keep it hidden until you tick the box again.
-   */
-  statsShowAgainOn?: string | null;
-  /**
-   * Shown under the hero. Drag to reorder.
-   */
-  stats?:
-    | {
-        label: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "settings".
- */
-export interface Setting {
-  id: number;
-  /**
-   * Recolours the entire site. Applies to every page, not just the homepage.
-   */
-  theme: 'meridian' | 'dusk' | 'terra';
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "header_select".
- */
-export interface HeaderSelect<T extends boolean = true> {
-  brand?: T;
-  navItems?:
-    | T
-    | {
-        label?: T;
-        href?: T;
-        enabled?: T;
-        dropdown?:
-          | T
-          | {
-              label?: T;
-              blurb?: T;
-              enabled?: T;
-              href?: T;
-              id?: T;
-            };
-        id?: T;
-      };
-  ctaLabel?: T;
-  ctaHref?: T;
-  ctaEnabled?: T;
-  _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home_select".
- */
-export interface HomeSelect<T extends boolean = true> {
-  variant?: T;
-  eyebrow?: T;
-  title?: T;
-  titleAccent?: T;
-  lede?: T;
-  primaryCta?: T;
-  secondaryCta?: T;
-  statsEnabled?: T;
-  statsShowAgainOn?: T;
-  stats?:
-    | T
-    | {
-        label?: T;
-        value?: T;
-        id?: T;
-      };
-  _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "settings_select".
- */
-export interface SettingsSelect<T extends boolean = true> {
-  theme?: T;
-  _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -676,19 +324,6 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TaskSchedulePublish".
- */
-export interface TaskSchedulePublish {
-  input: {
-    type?: ('publish' | 'unpublish') | null;
-    locale?: string | null;
-    global?: ('header' | 'home' | 'settings') | null;
-    user?: (number | null) | User;
-  };
-  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
