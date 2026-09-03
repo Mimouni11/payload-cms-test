@@ -1,4 +1,5 @@
 import { ClientLogos, clientLogosPlaceholder } from '@/blocks/ClientLogos'
+import { Expertises, expertisesPlaceholder } from '@/blocks/Expertises'
 import { Hero, heroPlaceholder } from '@/blocks/Hero'
 import { Navbar, navbarPlaceholder } from '@/components/Navbar'
 import './styles.css'
@@ -13,6 +14,7 @@ export default async function HomePage() {
       <Navbar {...navbarPlaceholder} />
       <Hero {...heroPlaceholder} />
       <ClientLogos {...clientLogosPlaceholder} />
+      <Expertises {...expertisesPlaceholder} />
     </>
   )
 }
