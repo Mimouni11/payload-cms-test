@@ -12,10 +12,13 @@
  * A theme can later be added by redefining the colours under [data-theme].
  */
 @theme {
-  --color-ink: #0f1113;
+  --color-ink: #171817;
   --color-paper: #ffffff;
-  --color-cream: #faf6ec;
-  --color-accent: #e2452b;
+  --color-cream: #fbf9ee;
+  /* The single red in the design system. */
+  --color-accent: #a91e23;
+  /* Muted blue-grey for secondary links. */
+  --color-muted: #8d99ae;
 
   /* next/font exposes these on <html>; aliased here so the utility names stay
      conventional and the variable is not self-referential. */
@@ -88,6 +91,13 @@
   @keyframes marquee {
     to {
       transform: translateX(-50%);
+    }
+  }
+
+  /* Used by the expertises carousel when the selected photograph changes. */
+  @keyframes fade {
+    from {
+      opacity: 0;
     }
   }
 
