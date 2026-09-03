@@ -1,3 +1,5 @@
+import { asset } from '@/utilities/asset'
+
 import type { ExpertisesProps } from './types'
 
 /**
@@ -13,7 +15,7 @@ const item = (title: string) => ({
   description,
   link: { label: 'Découvrir', href: '#' },
   image: {
-    src: '/nos-expertise.png',
+    src: asset('/nos-expertise.png'),
     alt: title,
     caption: 'Systèmes ABCD International',
   },

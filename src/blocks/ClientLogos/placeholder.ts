@@ -1,3 +1,5 @@
+import { asset } from '@/utilities/asset'
+
 import type { ClientLogosProps } from './types'
 
 /**
@@ -7,10 +9,10 @@ import type { ClientLogosProps } from './types'
 export const clientLogosPlaceholder: ClientLogosProps = {
   speedSeconds: 60,
   items: [
-    { src: '/sofrecom.png', alt: 'Sofrecom', width: 64, height: 48 },
-    { src: '/inetum.png', alt: 'Inetum', width: 220, height: 48 },
-    { src: '/BH.png', alt: 'BH Bank', width: 115, height: 48 },
-    { src: '/mcpharma.png', alt: 'MC Pharma', width: 241, height: 48 },
-    { src: '/attijari.png', alt: 'Attijari Bank', width: 180, height: 48 },
+    { src: asset('/sofrecom.png'), alt: 'Sofrecom', width: 64, height: 48 },
+    { src: asset('/inetum.png'), alt: 'Inetum', width: 220, height: 48 },
+    { src: asset('/BH.png'), alt: 'BH Bank', width: 115, height: 48 },
+    { src: asset('/mcpharma.png'), alt: 'MC Pharma', width: 241, height: 48 },
+    { src: asset('/attijari.png'), alt: 'Attijari Bank', width: 180, height: 48 },
   ],
 }

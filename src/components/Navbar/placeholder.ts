@@ -1,3 +1,5 @@
+import { asset } from '@/utilities/asset'
+
 import type { NavbarProps } from './types'
 
 /**
@@ -6,7 +8,7 @@ import type { NavbarProps } from './types'
  */
 export const navbarPlaceholder: NavbarProps = {
   brand: {
-    src: '/logo.png',
+    src: asset('/logo.png'),
     alt: 'BigArt Group',
     width: 122,
     height: 52,

@@ -1,3 +1,5 @@
+import { asset } from '@/utilities/asset'
+
 import type { HeroProps } from './types'
 
 /**
@@ -10,7 +12,7 @@ export const heroPlaceholder: HeroProps = {
   lede: 'De la conception à la livraison clé en main, Groupe BigArt orchestre chaque détail pour créer des environnements qui reflètent qui vous êtes. Depuis 2008.',
   cta: { label: 'Découvrir nos réalisations', href: '#projets' },
   image: {
-    src: '/hero-bg.jpg',
+    src: asset('/hero-bg.jpg'),
     alt: 'Salon professionnel aménagé avec un canapé en cuir orange devant un mur sombre à lattes verticales',
   },
 }
