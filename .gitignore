@@ -42,6 +42,10 @@ next-env.d.ts
 
 /media
 
+# Local assets — served from storage in deployed environments
+/public/*
+!/public/.gitkeep
+
 # Playwright
 node_modules/
 /test-results/
