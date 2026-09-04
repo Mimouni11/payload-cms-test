@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import { expertisesPlaceholder } from '@/blocks/Expertises'
+import { statsPlaceholder } from '@/blocks/Stats'
 
 /**
  * One-shot seed for a fresh database.
@@ -35,11 +36,24 @@ export async function GET(req: Request): Promise<Response> {
 
   const payload = await getPayload({ config: await config })
 
+  const seeded: string[] = []
+
+  // --- stats -------------------------------------------------------------
+  const existingStats = await payload.findGlobal({ slug: 'stats', depth: 0 })
+  if (!existingStats.items?.length) {
+    await payload.updateGlobal({ slug: 'stats', data: { items: statsPlaceholder.items } })
+    await payload.updateGlobal({ slug: 'stats', data: { _status: 'published' } })
+    seeded.push(`stats (${statsPlaceholder.items.length})`)
+  }
+
+  // --- expertises --------------------------------------------------------
   const existing = await payload.findGlobal({ slug: 'expertises', depth: 0 })
   if (existing.items && existing.items.length > 0) {
     return Response.json(
-      { seeded: false, reason: 'Expertises already has rows — delete them first to re-seed.' },
-      { status: 409 },
+      seeded.length
+        ? { seeded: true, wrote: seeded, note: 'Expertises already had rows and was skipped.' }
+        : { seeded: false, reason: 'Nothing to do — every global already has rows.' },
+      { status: seeded.length ? 200 : 409 },
     )
   }
 
@@ -92,10 +106,12 @@ export async function GET(req: Request): Promise<Response> {
     data: { _status: 'published' },
   })
 
+  seeded.push(`expertises (${expertisesPlaceholder.items.length})`)
+
   return Response.json({
     seeded: true,
+    wrote: seeded,
     mediaId: media.id,
     mediaUrl: media.url,
-    items: expertisesPlaceholder.items.length,
   })
 }

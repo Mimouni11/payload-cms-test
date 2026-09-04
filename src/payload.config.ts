@@ -10,6 +10,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { ExpertisesGlobal } from './blocks/Expertises/config'
+import { StatsGlobal } from './blocks/Stats/config'
 
 // R2 speaks the S3 API. Only enabled when credentials exist, so local dev
 // without them keeps writing uploads to disk instead of failing at boot.
@@ -35,7 +36,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media],
-  globals: [ExpertisesGlobal],
+  globals: [StatsGlobal, ExpertisesGlobal],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

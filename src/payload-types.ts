@@ -90,9 +90,11 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    stats: Stat;
     expertises: Expertise;
   };
   globalsSelect: {
+    stats: StatsSelect<false> | StatsSelect<true>;
     expertises: ExpertisesSelect<false> | ExpertisesSelect<true>;
   };
   locale: null;
@@ -452,6 +454,38 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats".
+ */
+export interface Stat {
+  id: number;
+  /**
+   * Drag to reorder. Shown left to right in the red band.
+   */
+  items?:
+    | {
+        /**
+         * Optional.
+         */
+        prefix?: string | null;
+        /**
+         * Digits only — this is what animates.
+         */
+        value: number;
+        /**
+         * Optional.
+         */
+        suffix?: string | null;
+        decimals?: number | null;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "expertises".
  */
 export interface Expertise {
@@ -489,6 +523,26 @@ export interface Expertise {
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats_select".
+ */
+export interface StatsSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        prefix?: T;
+        value?: T;
+        suffix?: T;
+        decimals?: T;
+        label?: T;
+        id?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -536,7 +590,7 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    global?: 'expertises' | null;
+    global?: ('stats' | 'expertises') | null;
     user?: (number | null) | User;
   };
   output?: unknown;
