@@ -25,7 +25,9 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: var(--font-fraunces), Georgia, 'Times New Roman', serif;
 
-  --spacing-gutter: clamp(20px, 3.4vw, 48px);
+  /* 41px at the 1440 design frame, so content lands on the design's 1353px
+     measure. Scales below that and stops growing above it. */
+  --spacing-gutter: clamp(20px, 2.85vw, 41px);
 
   --breakpoint-nav: 900px;
 }
