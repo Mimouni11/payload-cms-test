@@ -111,12 +111,42 @@ grid designed for exactly three items is not.
 
 ## Placeholders become seed data
 
-`placeholder.ts` is not throwaway. A `src/endpoints/seed/` route that imports every
-section's placeholder and writes it through the Local API means one request repopulates
-an empty environment.
+`placeholder.ts` is not throwaway. It is the input to the seed route, which writes it
+into Payload through the Local API so one request populates an empty environment.
 
 You will need this. A fresh database — a new Neon branch, a teammate's first clone, a
 staging reset — starts with an empty admin panel and nothing to look at.
+
+### The seed route
+
+`src/app/(frontend)/next/seed/route.ts`:
+
+```
+GET /next/seed?secret=<PREVIEW_SECRET>
+```
+
+It never runs on its own — no startup hook, no cron. Three guards, in order:
+
+1. **Development only.** Returns 404 when `NODE_ENV === 'production'`. It is a write
+   endpoint and has no business being reachable on the public site.
+2. **Requires `PREVIEW_SECRET`.** Wrong or missing → 401.
+3. **Refuses a non-empty target.** If the global already has rows → 409 and no write, so
+   calling it twice cannot duplicate content.
+
+To seed a **remote** database, point `DATABASE_URL` at it and run the route locally.
+That is deliberate: seeding is an operator action, not something the deployed app offers.
+
+Images referenced by a placeholder are fetched and re-uploaded through
+`payload.create({ collection: 'media', file })`, so they pass through the storage adapter
+exactly as an editor upload would, rather than being written straight to the bucket.
+
+### After seeding, delete the fallback
+
+While a section is being built, the page may fall back to the placeholder when the CMS
+returns nothing. **Remove that fallback once the content is seeded.** Leaving it means two
+sources of truth that drift silently — the page keeps rendering stale code content while
+an editor wonders why their change did nothing. The database is the source of truth; the
+placeholder is seed input only.
 
 ---
 
