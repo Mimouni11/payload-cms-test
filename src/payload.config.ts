@@ -1,6 +1,7 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -8,6 +9,13 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { ExpertisesGlobal } from './blocks/Expertises/config'
+
+// R2 speaks the S3 API. Only enabled when credentials exist, so local dev
+// without them keeps writing uploads to disk instead of failing at boot.
+const r2Configured = Boolean(
+  process.env.R2_BUCKET && process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID,
+)
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -27,7 +35,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media],
-  globals: [],
+  globals: [ExpertisesGlobal],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -44,5 +52,21 @@ export default buildConfig({
         client: { url: process.env.DATABASE_URL || '' },
       }),
   sharp,
-  plugins: [],
+  plugins: r2Configured
+    ? [
+        s3Storage({
+          collections: { media: true },
+          bucket: process.env.R2_BUCKET as string,
+          config: {
+            endpoint: process.env.R2_ENDPOINT,
+            // R2 ignores regions but the S3 client requires one.
+            region: 'auto',
+            credentials: {
+              accessKeyId: process.env.R2_ACCESS_KEY_ID as string,
+              secretAccessKey: process.env.R2_SECRET_ACCESS_KEY as string,
+            },
+          },
+        }),
+      ]
+    : [],
 })
