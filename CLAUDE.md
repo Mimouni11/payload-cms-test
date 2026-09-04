@@ -17,6 +17,10 @@ tokens, live-preview gotchas, and the rendering/deployment progression.
 If the doc does not cover the decision, or your change would contradict it, **stop and
 ask** rather than picking an approach. Do not silently establish a new convention.
 
+`docs/seo.md` covers rendering strategy, image sizing, metadata, sitemaps and draft
+visibility. Read it before changing how a page renders, adding a route, or touching the
+Media collection.
+
 ## Git
 
 Read-only git commands are fine without asking — `status`, `log`, `diff`, `show`,
