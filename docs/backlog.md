@@ -8,11 +8,12 @@ Ordering below is by risk, not by how interesting the work is.
 
 ## Risk and correctness
 
-- [ ] **1. Rendering split (fix A)**
-      Public route static with no `draftMode()`, preview on its own route,
-      `revalidatePath()` in `afterChange` hooks, plus the publish status indicator.
-      Decided and specified — see `docs/rendering.md` and `docs/admin-ui.md`.
-      The indicator ships with this, not after it.
+- [x] **1. Rendering split (fix A)** — done.
+      `/` is `force-static`, `/preview` is dynamic, both render the shared
+      `_home/HomeView` so the markup cannot drift. `revalidateHome` hooks on both globals
+      and Media, guarded so autosave does not trigger rebuilds. `/next/content-version`
+      reports what the static site is serving, and `PublishStatus` compares it against the
+      database to tell the editor when a publish is actually live.
 
 - [ ] **2. Migration gap**
       Only `20260903_191830_initial` exists, and it predates the Expertises and Stats
@@ -75,6 +76,16 @@ Ordering below is by risk, not by how interesting the work is.
 
 - [ ] **13. Logo as SVG** — the current `logo.png` is 122px wide and soft on retina.
       Needs the vector export from whoever owns the Figma file.
+
+- [ ] **14. Per-keystroke live preview**
+      `@payloadcms/live-preview` and `@payloadcms/live-preview-react` are installed but
+      never imported. Preview currently reflects changes on iframe reload, not as you type.
+      Adding `useLivePreview` to `/preview` would close that gap.
+      Two things to know before starting: the incoming message is admin **form state**, not
+      a document, so it must go through `mergeData` and then the existing `adapt*` functions;
+      and `useLivePreview` caches in a module-level singleton, so two hooks on one page
+      overwrite each other — a second previewing region needs a direct subscription filtered
+      on `globalSlug`.
 
 ---
 

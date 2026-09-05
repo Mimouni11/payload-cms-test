@@ -56,15 +56,27 @@ static pages it genuinely idles and only wakes on publish.
 - Each `livePreview.url` changes from `?path=/` to `?path=/preview`. The preview route
   already accepts a `path` parameter.
 
-**The editing experience does not change.** `/preview` keeps the `useLivePreview` hooks
-and still updates per keystroke. Live preview is not being replaced by a sync mechanism —
-it is only moving off the URL visitors use.
+**The editing experience does not change.** Live preview is not being replaced by a sync
+mechanism — it is only moving off the URL visitors use.
+
+> **Correction.** An earlier draft of this document claimed `/preview` "keeps the
+> `useLivePreview` hooks and still updates per keystroke". That was wrong. There is no
+> `useLivePreview` call or live-preview subscription anywhere in `src/` — the
+> `@payloadcms/live-preview` packages are installed but never imported. Preview works by
+> the iframe re-requesting the page with the draft cookie, and reflects changes on reload,
+> not per keystroke. The route split preserves exactly that. Adding per-keystroke preview
+> is separate, net-new work — backlog item 14.
 
 ### Required alongside it
 
 An `afterChange` hook on each global and collection calling `revalidatePath()` for the
 routes it affects. **Without this the static page serves stale content forever** — an
 editor publishes, nothing changes, and they stop trusting the CMS. This is not optional.
+
+Implemented in `src/hooks/revalidateHome.ts`, with one trap worth naming: both globals run
+`autosave: { interval: 200 }`, so an unguarded hook fires every fifth of a second while an
+editor types and would rebuild the static page continuously. The hook returns early unless
+`_status === 'published'` and `updatedAt` actually advanced.
 
 ### The trade-off, and what it requires
 
