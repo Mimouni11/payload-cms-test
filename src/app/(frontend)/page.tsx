@@ -1,37 +1,24 @@
-import { draftMode } from 'next/headers'
-import { getPayload } from 'payload'
+import React from 'react'
 
-import config from '@/payload.config'
-import { ClientLogos, clientLogosPlaceholder } from '@/blocks/ClientLogos'
-import { Expertises } from '@/blocks/Expertises'
-import { adaptExpertises } from '@/blocks/Expertises/adapt'
-import { Hero, heroPlaceholder } from '@/blocks/Hero'
-import { Stats, adaptStats } from '@/blocks/Stats'
-import { Navbar, navbarPlaceholder } from '@/components/Navbar'
+import { getHomeData } from './_home/getHomeData'
+import { HomeView } from './_home/HomeView'
 import './styles.css'
 
-export const dynamic = 'force-dynamic'
+/**
+ * The public homepage. Statically rendered and served from the CDN — no function
+ * invocation and no database query per visitor. Published content only; drafts
+ * live at /preview.
+ *
+ * `force-static` is a guard, not a preference: it errors if a dynamic API such as
+ * draftMode(), cookies() or headers() is reintroduced here, which is exactly how
+ * this route became dynamic in the first place.
+ *
+ * Kept current by revalidatePath('/') in src/hooks/revalidateHome.ts.
+ */
+export const dynamic = 'force-static'
 
 export default async function HomePage() {
-  const payload = await getPayload({ config: await config })
-  const { isEnabled: draft } = await draftMode()
+  const data = await getHomeData({ draft: false })
 
-  // depth 1 populates the upload on each row.
-  const [expertisesDoc, statsDoc] = await Promise.all([
-    payload.findGlobal({ slug: 'expertises', draft, depth: 1 }),
-    payload.findGlobal({ slug: 'stats', draft, depth: 0 }),
-  ])
-
-  const expertisesProps = adaptExpertises(expertisesDoc)
-  const statsProps = adaptStats(statsDoc)
-
-  return (
-    <>
-      <Navbar {...navbarPlaceholder} />
-      <Hero {...heroPlaceholder} />
-      <ClientLogos {...clientLogosPlaceholder} />
-      <Stats {...statsProps} />
-      <Expertises {...expertisesProps} />
-    </>
-  )
+  return <HomeView {...data} />
 }
