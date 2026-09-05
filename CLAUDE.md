@@ -24,6 +24,9 @@ or changing anything about caching or draft mode.
 `docs/seo.md` covers image sizing, metadata, sitemaps and draft visibility. Read it before
 touching the Media collection or adding pages that need metadata.
 
+`docs/admin-ui.md` covers customising the admin panel. Read it before adding any custom
+admin component — there is an import-map step that fails in production only.
+
 ## Git
 
 Read-only git commands are fine without asking — `status`, `log`, `diff`, `show`,

@@ -66,13 +66,22 @@ An `afterChange` hook on each global and collection calling `revalidatePath()` f
 routes it affects. **Without this the static page serves stale content forever** — an
 editor publishes, nothing changes, and they stop trusting the CMS. This is not optional.
 
-### The trade-off
+### The trade-off, and what it requires
 
 With `force-dynamic`, a published change is visible on the very next request. With static
 plus revalidation there is a gap between clicking Publish and the page rebuilding —
 usually a second or two, occasionally longer on a cold host.
 
-That is the entire cost, and it is the standard trade every static CMS site makes.
+That is the entire cost, and it is the standard trade every static CMS site makes. But it
+is invisible to a developer and confusing to everyone else, so it comes with a hard
+requirement:
+
+**The admin must show the editor when their change is actually live.** An editor publishes,
+opens the site immediately, sees the old content and concludes the CMS is broken. They will
+not wait, and they should not have to know that a rebuild exists.
+
+Specified in `docs/admin-ui.md` under *publish status indicator*. It ships with this
+change, not after it.
 
 ---
 
