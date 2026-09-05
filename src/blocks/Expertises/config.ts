@@ -1,5 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
+import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
+
 /**
  * Editable source for the expertises section.
  *
@@ -15,14 +17,33 @@ export const ExpertisesGlobal: GlobalConfig = {
   },
   admin: {
     group: 'Content',
+    components: {
+      elements: {
+        beforeDocumentControls: [
+          {
+            path: '@/components/admin/PublishStatus#PublishStatus',
+            clientProps: { globalSlug: 'expertises' },
+          },
+        ],
+      },
+    },
     livePreview: {
+      // path=/preview keeps the editor off the public route, which is static.
       url: `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/next/preview?secret=${
         process.env.PREVIEW_SECRET || ''
-      }`,
+      }&path=/preview`,
     },
   },
+  hooks: {
+    afterChange: [revalidateHomeGlobal],
+  },
+  // Single-editor site: locking exists to stop concurrent editors colliding, and
+  // its two-step insert races under rapid autosave.
+  lockDocuments: false,
   versions: {
-    drafts: { autosave: { interval: 200 }, schedulePublish: true },
+    // 200ms fired five times a second and, with live preview's mergeData calls on
+    // top, was enough to lose that race. 1s is imperceptible while editing.
+    drafts: { autosave: { interval: 1000 }, schedulePublish: true },
     max: 30,
   },
   fields: [
