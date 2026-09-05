@@ -25,6 +25,9 @@ the ones this project has not made yet.
 
 ## 1. Rendering strategy — highest impact
 
+> Decided. See **`docs/rendering.md`** for the chosen approach and the reasoning. Summary
+> below; that document is the source of truth.
+
 `src/app/(frontend)/page.tsx` sets:
 
 ```ts

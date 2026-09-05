@@ -17,9 +17,12 @@ tokens, live-preview gotchas, and the rendering/deployment progression.
 If the doc does not cover the decision, or your change would contradict it, **stop and
 ask** rather than picking an approach. Do not silently establish a new convention.
 
-`docs/seo.md` covers rendering strategy, image sizing, metadata, sitemaps and draft
-visibility. Read it before changing how a page renders, adding a route, or touching the
-Media collection.
+`docs/rendering.md` is the decision on how pages render: the public route is static, live
+preview lives on its own route, and publishing revalidates. Read it before adding a route
+or changing anything about caching or draft mode.
+
+`docs/seo.md` covers image sizing, metadata, sitemaps and draft visibility. Read it before
+touching the Media collection or adding pages that need metadata.
 
 ## Git
 
