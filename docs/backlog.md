@@ -15,16 +15,20 @@ Ordering below is by risk, not by how interesting the work is.
       reports what the static site is serving, and `PublishStatus` compares it against the
       database to tell the editor when a publish is actually live.
 
-- [ ] **2. Migration gap**
-      Only `20260903_191830_initial` exists, and it predates the Expertises and Stats
-      globals — those reached Neon through dev push, not a migration. A database built
-      from migrations alone would be missing both tables.
-      Netlify runs `payload migrate` on deploy, so this works today only because that one
-      database already has the schema. Generate a catch-up migration.
+- [x] **2 + 3. Migrations replace dev push** — done.
+      `push: false` on both adapters. The stale migration (which predated the Expertises
+      and Stats globals) was deleted and regenerated against the current config, so it now
+      creates all 21 tables. The database's `dev` / batch `-1` marker was replaced with
+      that migration recorded as applied — the tables already existed, so it must be
+      recorded rather than executed.
 
-- [ ] **3. `push: false` on the postgres adapter**
-      Not set, so it defaults on in development. This is what hung the dev server twice on
-      a hidden interactive y/N prompt. Migrations exist now; push is pure hazard.
+      **What this was actually costing:** every Netlify deploy ran `payload migrate`, hit
+      *"It looks like you've run Payload in dev mode… proceed? (y/N)"*, and sat there for
+      **5m17s** before defaulting to no. Migrations had never once run in production, and
+      no deploy ever failed, so nothing surfaced it. Deploys should now be ~1 minute.
+
+      **Workflow from here:** change a config → `pnpm payload migrate:create <name>` →
+      commit the file. Never push.
 
 - [ ] **4. R2 credentials in Netlify**
       `R2_BUCKET`, `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`.
@@ -97,4 +101,7 @@ Ordering below is by risk, not by how interesting the work is.
 - Neon Postgres with an initial migration
 - Dev-only seed route
 - Tailwind v4 migration
+- Static homepage with `/preview` split, revalidation hooks and publish status indicator
+- Live preview subscription — edits appear without reloading the iframe
+- Schema managed by migrations; `netlify.toml` holds the build command
 - Docs: content architecture, rendering, SEO, admin UI
