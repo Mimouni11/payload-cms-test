@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     services: Service;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -81,6 +82,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -199,6 +201,42 @@ export interface Service {
   linkHref?: string | null;
   /**
    * Lower numbers appear first in the accordion.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Projects shown in the "Nos réalisations" carousel.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * Generated from the title if left empty. Used for the project page URL.
+   */
+  slug?: string | null;
+  sector?: string | null;
+  city?: string | null;
+  /**
+   * One or two lines, shown under the title on the card.
+   */
+  summary?: string | null;
+  image: number | Media;
+  /**
+   * Shown as tags on the card. Chosen from Métiers so the names cannot drift.
+   */
+  services?: (number | Service)[] | null;
+  /**
+   * Only featured projects appear in the homepage carousel.
+   */
+  featured?: boolean | null;
+  /**
+   * Lower numbers appear first.
    */
   order?: number | null;
   updatedAt: string;
@@ -422,6 +460,24 @@ export interface ServicesSelect<T extends boolean = true> {
   caption?: T;
   linkLabel?: T;
   linkHref?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  sector?: T;
+  city?: T;
+  summary?: T;
+  image?: T;
+  services?: T;
+  featured?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -10,6 +10,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Services } from './collections/Services'
+import { Projects } from './collections/Projects'
 import { ExpertisesGlobal } from './blocks/Expertises/config'
 import { StatsGlobal } from './blocks/Stats/config'
 
@@ -36,7 +37,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Media, Services],
+  collections: [Users, Media, Services, Projects],
   globals: [StatsGlobal, ExpertisesGlobal],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
