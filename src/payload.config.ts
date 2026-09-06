@@ -42,15 +42,23 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  // Postgres in production — Vercel's filesystem is ephemeral, so a SQLite file
-  // would be wiped on every deploy. Picked from the connection string itself so
-  // there is no second flag to keep in sync; local dev stays on SQLite.
+  // Postgres in production — a serverless filesystem is ephemeral, so a SQLite
+  // file would be wiped on every deploy. Picked from the connection string itself
+  // so there is no second flag to keep in sync; local dev stays on SQLite.
+  //
+  // `push: false` is deliberate. Dev push applies schema changes directly and
+  // leaves no history, which is how this database ended up marked `dev` with no
+  // migration ever applied — and why every Netlify build sat 5 minutes on an
+  // interactive prompt nobody could answer. Schema changes now go through
+  // `pnpm payload migrate:create <name>` and a committed file.
   db: process.env.DATABASE_URL?.startsWith('postgres')
     ? postgresAdapter({
         pool: { connectionString: process.env.DATABASE_URL },
+        push: false,
       })
     : sqliteAdapter({
         client: { url: process.env.DATABASE_URL || '' },
+        push: false,
       }),
   sharp,
   plugins: r2Configured
