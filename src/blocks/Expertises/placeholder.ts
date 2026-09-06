@@ -15,7 +15,7 @@ const item = (title: string) => ({
   description,
   link: { label: 'Découvrir', href: '#' },
   image: {
-    src: asset('/nos-expertise-1600.jpg'),
+    src: asset('/nos-expertise-1601.webp'),
     alt: title,
     caption: 'Systèmes ABCD International',
   },

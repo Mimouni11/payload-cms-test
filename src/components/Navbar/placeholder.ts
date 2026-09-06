@@ -8,7 +8,7 @@ import type { NavbarProps } from './types'
  */
 export const navbarPlaceholder: NavbarProps = {
   brand: {
-    src: asset('/logo.png'),
+    src: asset('/logo.webp'),
     alt: 'BigArt Group',
     width: 122,
     height: 52,
