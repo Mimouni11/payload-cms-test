@@ -1,67 +1,135 @@
-# Payload Blank Template
+# BigArt Group
 
-This template comes configured with the bare minimum to get started on anything you need.
+Marketing site for Groupe BigArt, built with Payload CMS inside Next.js.
 
-## Quick start
+| | |
+|---|---|
+| CMS + app | Payload 3 running inside Next.js 16 (App Router) |
+| Database | Postgres (Neon) in production, SQLite locally if you point at a file |
+| Media | Cloudflare R2 via `@payloadcms/storage-s3` |
+| Styling | Tailwind v4, tokens in `src/app/(frontend)/styles.css` |
+| Hosting | Netlify — build config in `netlify.toml` |
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+---
 
-## Quick Start - local setup
+## Local setup
 
-To spin up this template locally, follow these steps:
+```bash
+cp .env.example .env     # then fill in the values below
+pnpm install
+pnpm dev
+```
 
-### Clone
+Open `http://localhost:3000` for the site, `/admin` for the CMS.
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+### Environment variables
 
-### Development
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Postgres connection string (or `file:./site-test.db` for SQLite) |
+| `PAYLOAD_SECRET` | Signs auth tokens. Must match between environments sharing a database |
+| `PREVIEW_SECRET` | Guards the preview and seed routes |
+| `NEXT_PUBLIC_SERVER_URL` | Origin used by live preview |
+| `cloudflare_r2` | Public R2 bucket URL for static assets |
+| `R2_BUCKET`, `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Media uploads |
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+The adapter is chosen from `DATABASE_URL`: anything starting with `postgres` uses
+Postgres, otherwise SQLite.
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+### Seeding an empty database
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+```bash
+curl "http://localhost:3000/next/seed?secret=$PREVIEW_SECRET"
+```
 
-#### Docker (Optional)
+Development only, and it refuses to run if content already exists. To seed a remote
+database, point `DATABASE_URL` at it and run this locally.
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+---
 
-To do so, follow these steps:
+## Changing the schema
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+**`push` is disabled.** The dev server will not apply schema changes for you — that is
+deliberate. Dev push leaves no history, and it previously left this project with a
+database no one could rebuild and a deploy that sat five minutes on a hidden prompt.
 
-## How it works
+You only need this when the **schema** changes:
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+| Change | Migration needed? |
+|---|---|
+| Editing content in the admin | No |
+| Components, CSS, placeholder copy | No |
+| Adding or removing a field, collection or global | **Yes** |
+| Changing a field's type or `required` | **Yes** |
 
-### Collections
+```bash
+# 1. edit the collection or global config
+pnpm payload migrate:create add-projets   # generates src/migrations/<timestamp>_add-projets.ts
+pnpm payload migrate                      # applies it
+pnpm generate:types                       # regenerates src/payload-types.ts
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+git add src/migrations src/collections
+git commit -m "feat(cms): add projets collection"
+```
 
-- #### Users (Authentication)
+Netlify runs `payload migrate` before every build, so the deploy applies anything not yet
+recorded. Useful commands:
 
-  Users are auth-enabled collections that have access to the admin panel.
+```bash
+pnpm payload migrate:status   # what is applied and what is pending
+pnpm payload migrate:down     # roll back the last batch
+```
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/3.x/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+> **Careful:** local development and Netlify currently share one Neon database, so
+> `pnpm payload migrate` changes production immediately — before the code that uses it is
+> deployed. Additive changes are harmless; a destructive one breaks the live site until
+> the deploy lands. Run migrations right before pushing, or give local dev its own Neon
+> branch.
 
-- #### Media
+### After adding a custom admin component
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+```bash
+pnpm generate:importmap
+```
 
-### Docker
+Commit the updated `importMap.js`. Skipping this breaks the admin panel **in production
+only** — your local file is correct and the committed one is stale.
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+---
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+## How rendering works
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+- **`/`** is statically rendered and serves published content only. No database query per
+  visitor.
+- **`/preview`** is dynamic, reads draft content, and subscribes to Payload's live-preview
+  channel so edits appear without reloading.
+- Publishing triggers `revalidatePath` (`src/hooks/revalidateHome.ts`), which rebuilds the
+  static page. The admin shows a status indicator so editors know when their change is
+  actually live.
 
-## Questions
+Full reasoning in `docs/rendering.md`.
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+---
+
+## Commands
+
+```bash
+pnpm dev                  # development
+pnpm build                # production build — check the route table for ○ / (static)
+pnpm start                # serve the production build
+pnpm generate:types       # after every schema change
+pnpm generate:importmap   # after adding a custom admin component
+./node_modules/.bin/tsc --noEmit
+```
+
+---
+
+## Documentation
+
+| File | Contents |
+|---|---|
+| `docs/content-architecture.md` | Folder layout, props contract, design-first workflow, editor control panel |
+| `docs/rendering.md` | Static vs preview split, revalidation, caching fallback |
+| `docs/seo.md` | Image sizing, metadata, sitemaps, draft visibility |
+| `docs/admin-ui.md` | Customising the admin panel, import map warning |
+| `docs/backlog.md` | Outstanding work |
