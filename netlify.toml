@@ -1,0 +1,15 @@
+# Build configuration, kept in the repo rather than the Netlify dashboard so it
+# is reviewable, travels with the code, and a new developer can see what the
+# deploy actually does without being given access to a settings page.
+#
+# Settings here override the dashboard.
+
+[build]
+  # Migrations run before the build so the schema is in place for static
+  # generation, which queries the database at build time.
+  command = "pnpm payload migrate && pnpm build"
+  publish = ".next"
+
+[build.environment]
+  # Older Node versions fail this build; pin it rather than inherit the default.
+  NODE_VERSION = "22"
