@@ -1,14 +1,20 @@
 'use client'
 
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { ProjectCardData } from './types'
 
-const PER_PAGE = 2
+const AUTOPLAY_MS = 5000
 
 const Corner: React.FC = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" className="flex-none -scale-x-100">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    className="flex-none -scale-x-100"
+  >
     <path
       d="M4 4v5a4 4 0 004 4h12M15 9l5 4-5 4"
       fill="none"
@@ -28,7 +34,7 @@ const Card: React.FC<{ project: ProjectCardData }> = ({ project }) => (
         src={project.image.src}
         alt={project.image.alt}
         fill
-        sizes="(max-width: 1024px) 100vw, 46vw"
+        sizes="(max-width: 768px) 100vw, 46vw"
         quality={82}
       />
     </div>
@@ -72,38 +78,70 @@ const Card: React.FC<{ project: ProjectCardData }> = ({ project }) => (
 )
 
 /**
- * Two projects per page, as the design shows — the dots step a page at a time,
- * swapping both cards rather than sliding by one.
+ * Two cards visible, sliding one at a time.
+ *
+ * Not paged two-at-a-time: with an odd number of projects the last page would
+ * be half empty. Stepping by one means every project gets a turn on the left,
+ * and the dot count follows the project count rather than the page count.
+ *
+ * The track holds every card and is translated by whole slide widths. Slide
+ * width lives in a CSS variable so the same arithmetic works at both
+ * breakpoints — one card on mobile, two from `md` up — without measuring
+ * anything in JavaScript.
  */
 export const Carousel: React.FC<{ items: ProjectCardData[] }> = ({ items }) => {
-  const [page, setPage] = useState(0)
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
 
-  const pageCount = Math.ceil(items.length / PER_PAGE)
-  const visible = items.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE)
+  // Clamped to whatever the current viewport shows; the desktop case (2) is the
+  // constraining one, and on mobile the last slide simply sits flush.
+  const lastIndex = Math.max(0, items.length - 2)
+  const current = Math.min(index, lastIndex)
 
+  useEffect(() => {
+    if (lastIndex === 0 || paused) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const id = setInterval(() => setIndex((i) => (i >= lastIndex ? 0 : i + 1)), AUTOPLAY_MS)
+
+    return () => clearInterval(id)
+  }, [lastIndex, paused])
+
+  // Pause on hover only. Pausing on focus as well looked identical but broke it:
+  // clicking a dot focuses that button, focus then stays there, and autoplay
+  // never resumed.
   return (
-    <div>
-      <div
-        // Keyed on the page so the fade replays when both cards swap.
-        key={page}
-        className="grid animate-[fade_350ms_ease-out] gap-[clamp(24px,3vw,44px)] md:grid-cols-2"
-      >
-        {visible.map((project) => (
-          <Card key={project.href + project.title} project={project} />
-        ))}
+    <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <div className="overflow-hidden">
+        <div
+          className="flex [--slide:100%] transition-transform duration-500 ease-out md:[--slide:50%]"
+          style={{
+            transform: 'translateX(calc(var(--i) * -1 * var(--slide)))',
+            ['--i' as string]: current,
+          }}
+        >
+          {items.map((project) => (
+            <div
+              className="w-[var(--slide)] shrink-0 pr-0 md:pr-[clamp(24px,3vw,44px)]"
+              key={project.href + project.title}
+            >
+              <Card project={project} />
+            </div>
+          ))}
+        </div>
       </div>
 
-      {pageCount > 1 && (
+      {lastIndex > 0 && (
         <div className="mt-10 flex justify-center gap-[10px]">
-          {Array.from({ length: pageCount }, (_, i) => (
+          {Array.from({ length: lastIndex + 1 }, (_, i) => (
             <button
               type="button"
               key={i}
-              onClick={() => setPage(i)}
-              aria-label={`Page ${i + 1} sur ${pageCount}`}
-              aria-current={i === page}
+              onClick={() => setIndex(i)}
+              aria-label={`Réalisation ${i + 1}`}
+              aria-current={i === current}
               className={`size-1.5 rounded-full bg-accent transition-opacity duration-300 ${
-                i === page ? 'opacity-100' : 'opacity-40 hover:opacity-70'
+                i === current ? 'opacity-100' : 'opacity-40 hover:opacity-70'
               }`}
             />
           ))}
