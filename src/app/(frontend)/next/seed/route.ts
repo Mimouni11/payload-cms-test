@@ -46,13 +46,13 @@ export async function GET(req: Request): Promise<Response> {
     seeded.push(`stats (${statsPlaceholder.items.length})`)
   }
 
-  // --- expertises --------------------------------------------------------
-  const existing = await payload.findGlobal({ slug: 'expertises', depth: 0 })
-  if (existing.items && existing.items.length > 0) {
+  // --- expertises: heading in the global, entries in the services collection --
+  const existingServices = await payload.count({ collection: 'services' })
+  if (existingServices.totalDocs > 0) {
     return Response.json(
       seeded.length
-        ? { seeded: true, wrote: seeded, note: 'Expertises already had rows and was skipped.' }
-        : { seeded: false, reason: 'Nothing to do — every global already has rows.' },
+        ? { seeded: true, wrote: seeded, note: 'Services already exist and were skipped.' }
+        : { seeded: false, reason: 'Nothing to do — content already exists.' },
       { status: seeded.length ? 200 : 409 },
     )
   }
@@ -84,29 +84,34 @@ export async function GET(req: Request): Promise<Response> {
     },
   })
 
+  // The global now holds only the section heading.
   await payload.updateGlobal({
     slug: 'expertises',
     data: {
       badge: expertisesPlaceholder.badge,
       headingLines: expertisesPlaceholder.headingLines.map((text) => ({ text })),
-      items: expertisesPlaceholder.items.map((item) => ({
+    },
+  })
+  await payload.updateGlobal({ slug: 'expertises', data: { _status: 'published' } })
+
+  // Each entry is its own document, so projects can relate to them.
+  for (const [index, item] of expertisesPlaceholder.items.entries()) {
+    await payload.create({
+      collection: 'services',
+      data: {
         title: item.title,
         description: item.description,
         image: media.id,
         caption: item.image.caption,
         linkLabel: item.link?.label,
         linkHref: item.link?.href,
-      })),
-    },
-  })
+        order: index + 1,
+        _status: 'published',
+      },
+    })
+  }
 
-  // Publish so the public site sees it, not just draft preview.
-  await payload.updateGlobal({
-    slug: 'expertises',
-    data: { _status: 'published' },
-  })
-
-  seeded.push(`expertises (${expertisesPlaceholder.items.length})`)
+  seeded.push(`services (${expertisesPlaceholder.items.length})`)
 
   return Response.json({
     seeded: true,

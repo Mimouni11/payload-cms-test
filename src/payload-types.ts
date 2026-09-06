@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    services: Service;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -79,6 +80,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -174,6 +176,34 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * Shown in the "Nos métiers" section, and used to tag projects.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  title: string;
+  /**
+   * Shown when the accordion row is open. Optional.
+   */
+  description?: string | null;
+  image: number | Media;
+  /**
+   * Overlaid on the photo, bottom left. Optional.
+   */
+  caption?: string | null;
+  linkLabel?: string | null;
+  linkHref?: string | null;
+  /**
+   * Lower numbers appear first in the accordion.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -383,6 +413,22 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
+  caption?: T;
+  linkLabel?: T;
+  linkHref?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -485,6 +531,8 @@ export interface Stat {
   createdAt?: string | null;
 }
 /**
+ * The heading above the section. The entries are under Métiers.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "expertises".
  */
@@ -497,26 +545,6 @@ export interface Expertise {
   headingLines?:
     | {
         text: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Drag to reorder. Each row is one accordion entry and one carousel slide.
-   */
-  items?:
-    | {
-        title: string;
-        /**
-         * Shown when the row is open. Optional.
-         */
-        description?: string | null;
-        image: number | Media;
-        /**
-         * Overlaid on the photo, bottom left. Optional.
-         */
-        caption?: string | null;
-        linkLabel?: string | null;
-        linkHref?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -554,17 +582,6 @@ export interface ExpertisesSelect<T extends boolean = true> {
     | T
     | {
         text?: T;
-        id?: T;
-      };
-  items?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-        caption?: T;
-        linkLabel?: T;
-        linkHref?: T;
         id?: T;
       };
   _status?: T;

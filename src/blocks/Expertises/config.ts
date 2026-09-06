@@ -3,20 +3,24 @@ import type { GlobalConfig } from 'payload'
 import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
 
 /**
- * Editable source for the expertises section.
+ * Chrome for the expertises section — the label and the heading.
  *
- * A global rather than a collection: there is exactly one of these on the
- * homepage, with fixed slots. Each row in `items` is one accordion entry and
- * one carousel slide — adding a row adds both.
+ * The entries themselves live in the `services` collection, not here. They moved
+ * out when projects needed to tag themselves with them: as rows in an array they
+ * would have been duplicated as free text on every project and drifted the moment
+ * someone typed "Signalitique".
+ *
+ * A global because there is exactly one of these headings on the homepage.
  */
 export const ExpertisesGlobal: GlobalConfig = {
   slug: 'expertises',
-  label: 'Nos métiers',
+  label: 'Nos métiers (titre)',
   access: {
     read: () => true,
   },
   admin: {
     group: 'Content',
+    description: 'The heading above the section. The entries are under Métiers.',
     components: {
       elements: {
         beforeDocumentControls: [
@@ -62,63 +66,6 @@ export const ExpertisesGlobal: GlobalConfig = {
       admin: { description: 'One row per line. The break is deliberate, not reflowed.' },
       defaultValue: [{ text: 'Six expertises.' }, { text: 'Une seule équipe.' }],
       fields: [{ name: 'text', type: 'text', required: true }],
-    },
-    {
-      name: 'items',
-      type: 'array',
-      label: 'Expertises',
-      minRows: 1,
-      maxRows: 10,
-      labels: { singular: 'Expertise', plural: 'Expertises' },
-      admin: {
-        description: 'Drag to reorder. Each row is one accordion entry and one carousel slide.',
-      },
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-          required: true,
-          admin: { placeholder: 'Cloisonnement' },
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          label: 'Body copy',
-          admin: { description: 'Shown when the row is open. Optional.' },
-        },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-          label: 'Carousel photo',
-        },
-        {
-          name: 'caption',
-          type: 'text',
-          label: 'Photo caption',
-          admin: { description: 'Overlaid on the photo, bottom left. Optional.' },
-        },
-        {
-          type: 'row',
-          fields: [
-            {
-              name: 'linkLabel',
-              type: 'text',
-              label: 'Link label',
-              defaultValue: 'Découvrir',
-              admin: { width: '50%' },
-            },
-            {
-              name: 'linkHref',
-              type: 'text',
-              label: 'Link URL',
-              defaultValue: '#',
-              admin: { width: '50%' },
-            },
-          ],
-        },
-      ],
     },
   ],
 }

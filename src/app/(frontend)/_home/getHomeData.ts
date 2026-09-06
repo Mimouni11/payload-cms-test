@@ -3,7 +3,11 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { adaptExpertises, type ExpertisesProps } from '@/blocks/Expertises'
 import { adaptStats, type StatsProps } from '@/blocks/Stats'
-import type { Expertise as PayloadExpertises, Stat as PayloadStats } from '@/payload-types'
+import type {
+  Expertise as PayloadExpertises,
+  Service as PayloadService,
+  Stat as PayloadStats,
+} from '@/payload-types'
 
 export type HomeData = {
   expertises: ExpertisesProps
@@ -12,6 +16,7 @@ export type HomeData = {
 
 export type HomeDocs = {
   expertisesDoc: PayloadExpertises
+  services: PayloadService[]
   statsDoc: PayloadStats
 }
 
@@ -31,12 +36,19 @@ export const STATS_DEPTH = 0
 export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDocs> => {
   const payload = await getPayload({ config: await config })
 
-  const [expertisesDoc, statsDoc] = await Promise.all([
+  const [expertisesDoc, statsDoc, servicesResult] = await Promise.all([
     payload.findGlobal({ slug: 'expertises', draft, depth: EXPERTISES_DEPTH }),
     payload.findGlobal({ slug: 'stats', draft, depth: STATS_DEPTH }),
+    payload.find({
+      collection: 'services',
+      draft,
+      depth: EXPERTISES_DEPTH,
+      limit: 20,
+      sort: 'order',
+    }),
   ])
 
-  return { expertisesDoc, statsDoc }
+  return { expertisesDoc, services: servicesResult.docs, statsDoc }
 }
 
 /**
@@ -44,10 +56,10 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
  * live updates to apply.
  */
 export const getHomeData = async ({ draft }: { draft: boolean }): Promise<HomeData> => {
-  const { expertisesDoc, statsDoc } = await getHomeDocs({ draft })
+  const { expertisesDoc, services, statsDoc } = await getHomeDocs({ draft })
 
   return {
-    expertises: adaptExpertises(expertisesDoc),
+    expertises: adaptExpertises(expertisesDoc, services),
     stats: adaptStats(statsDoc),
   }
 }
