@@ -30,10 +30,8 @@ Ordering below is by risk, not by how interesting the work is.
       **Workflow from here:** change a config → `pnpm payload migrate:create <name>` →
       commit the file. Never push.
 
-- [ ] **4. R2 credentials in Netlify**
-      `R2_BUCKET`, `R2_ENDPOINT`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`.
-      Without them the build succeeds and uploads fail at runtime — the worst kind of
-      failure, because nothing looks wrong until an editor tries to add a photo.
+- [x] **4. R2 credentials in Netlify** — done and verified. Uploads reach the bucket from
+      the deployed site.
 
 - [ ] **5. `schedulePublish`**
       Enabled on the Expertises and Stats globals with no `jobs` block in the config, so
@@ -54,10 +52,17 @@ Ordering below is by risk, not by how interesting the work is.
       - Homepage selection: `featured` flag, or latest N?
       - Dots: pages of two, or one card at a time?
 
-- [ ] **7. Navbar, Hero and ClientLogos are still hardcoded**
-      Only Expertises and Stats are editor-controlled. The hero headline — the most visible
-      copy on the site — lives in a TypeScript file. A demo that pitches "your team edits
-      the site" while the headline is uneditable undercuts itself.
+- [ ] **7. Client logos are hardcoded**
+      The marquee band is five entries in `ClientLogos/placeholder.ts` pointing at files
+      uploaded to R2 by hand. Winning a new client currently means a developer edits a
+      TypeScript file and deploys.
+      Smallest possible collection — `name`, `logo` upload, `order`, optional `website`.
+      One risk to design around: the row normalises every logo to 44px tall, so a badly
+      cropped upload will look wrong. Same exposure as project photos.
+
+      **Decided: Navbar and Hero stay hardcoded.** That copy changes once a year, and the
+      hero's layout depends on the headline breaking exactly where it does. Not worth the
+      fields.
 
 - [ ] **8. Payload roles**
       `admin` vs `editor`. Everything currently gates on "is anyone logged in", so any
