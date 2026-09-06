@@ -3,9 +3,11 @@
 import React from 'react'
 
 import { adaptExpertises } from '@/blocks/Expertises'
+import { adaptProjects } from '@/blocks/Projects'
 import { adaptStats } from '@/blocks/Stats'
 import type {
   Expertise as PayloadExpertises,
+  Project as PayloadProject,
   Service as PayloadService,
   Stat as PayloadStats,
 } from '@/payload-types'
@@ -15,6 +17,7 @@ import { useGlobalPreview } from './useGlobalPreview'
 
 type Props = {
   expertisesDoc: PayloadExpertises
+  projects: PayloadProject[]
   services: PayloadService[]
   statsDoc: PayloadStats
 }
@@ -27,7 +30,7 @@ type Props = {
  * whose image is not a populated object, so a shallower merge would blank the
  * carousel every time the editor typed.
  */
-export const HomeLive: React.FC<Props> = ({ expertisesDoc, services, statsDoc }) => {
+export const HomeLive: React.FC<Props> = ({ expertisesDoc, projects, services, statsDoc }) => {
   const expertises = useGlobalPreview<PayloadExpertises>('expertises', expertisesDoc, 1)
   const stats = useGlobalPreview<PayloadStats>('stats', statsDoc, 0)
 
@@ -36,6 +39,10 @@ export const HomeLive: React.FC<Props> = ({ expertisesDoc, services, statsDoc })
   // reloads this route rather than streaming in, which is acceptable — the
   // heading and figures are what an editor tweaks repeatedly.
   return (
-    <HomeView expertises={adaptExpertises(expertises, services)} stats={adaptStats(stats)} />
+    <HomeView
+      expertises={adaptExpertises(expertises, services)}
+      projects={adaptProjects(projects)}
+      stats={adaptStats(stats)}
+    />
   )
 }

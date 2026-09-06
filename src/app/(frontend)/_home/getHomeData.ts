@@ -2,19 +2,23 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import { adaptExpertises, type ExpertisesProps } from '@/blocks/Expertises'
+import { adaptProjects, type ProjectsProps } from '@/blocks/Projects'
 import { adaptStats, type StatsProps } from '@/blocks/Stats'
 import type {
   Expertise as PayloadExpertises,
+  Project as PayloadProject,
   Service as PayloadService,
   Stat as PayloadStats,
 } from '@/payload-types'
 
 export type HomeData = {
+  projects: ProjectsProps
   expertises: ExpertisesProps
   stats: StatsProps
 }
 
 export type HomeDocs = {
+  projects: PayloadProject[]
   expertisesDoc: PayloadExpertises
   services: PayloadService[]
   statsDoc: PayloadStats
@@ -36,7 +40,7 @@ export const STATS_DEPTH = 0
 export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDocs> => {
   const payload = await getPayload({ config: await config })
 
-  const [expertisesDoc, statsDoc, servicesResult] = await Promise.all([
+  const [expertisesDoc, statsDoc, servicesResult, projectsResult] = await Promise.all([
     payload.findGlobal({ slug: 'expertises', draft, depth: EXPERTISES_DEPTH }),
     payload.findGlobal({ slug: 'stats', draft, depth: STATS_DEPTH }),
     payload.find({
@@ -46,9 +50,24 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
       limit: 20,
       sort: 'order',
     }),
+    payload.find({
+      collection: 'projects',
+      draft,
+      // depth 1 populates both the image and the service relationships, which
+      // supply the card's tag names.
+      depth: 1,
+      limit: 12,
+      sort: 'order',
+      where: { featured: { equals: true } },
+    }),
   ])
 
-  return { expertisesDoc, services: servicesResult.docs, statsDoc }
+  return {
+    expertisesDoc,
+    projects: projectsResult.docs,
+    services: servicesResult.docs,
+    statsDoc,
+  }
 }
 
 /**
@@ -56,10 +75,11 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
  * live updates to apply.
  */
 export const getHomeData = async ({ draft }: { draft: boolean }): Promise<HomeData> => {
-  const { expertisesDoc, services, statsDoc } = await getHomeDocs({ draft })
+  const { expertisesDoc, projects, services, statsDoc } = await getHomeDocs({ draft })
 
   return {
     expertises: adaptExpertises(expertisesDoc, services),
+    projects: adaptProjects(projects),
     stats: adaptStats(statsDoc),
   }
 }
