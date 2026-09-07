@@ -3,7 +3,7 @@ import React from 'react'
 
 import type { NavbarProps } from './types'
 
-export const Navbar: React.FC<NavbarProps> = ({ brand, links, cta }) => {
+export const Navbar: React.FC<NavbarProps> = ({ brand, links, cta, activeHref }) => {
   return (
     <header className="absolute inset-x-0 top-0 z-10 flex h-[86px] items-center gap-8 px-gutter text-white max-nav:justify-between">
       <a className="flex flex-none items-center" href={brand.href}>
@@ -20,9 +20,12 @@ export const Navbar: React.FC<NavbarProps> = ({ brand, links, cta }) => {
       <nav className="mx-auto flex items-center gap-[clamp(14px,2.2vw,30px)] max-nav:hidden">
         {links.map((link) => (
           <a
-            className="text-sm font-medium text-white/75 transition-colors hover:text-white"
+            className={`text-sm transition-colors hover:text-white ${
+              link.href === activeHref ? 'font-semibold text-white' : 'font-medium text-white/75'
+            }`}
             href={link.href}
             key={link.label}
+            aria-current={link.href === activeHref ? 'page' : undefined}
           >
             {link.label}
           </a>

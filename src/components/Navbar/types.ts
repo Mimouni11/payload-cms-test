@@ -13,5 +13,7 @@ export type NavbarProps = {
     href: string
   }
   links: NavLink[]
+  /** Marks the current page's link, as the design shows on /projets. */
+  activeHref?: string
   cta: NavLink
 }
