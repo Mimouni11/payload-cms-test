@@ -96,10 +96,12 @@ export interface Config {
   globals: {
     stats: Stat;
     expertises: Expertise;
+    footer: Footer;
   };
   globalsSelect: {
     stats: StatsSelect<false> | StatsSelect<true>;
     expertises: ExpertisesSelect<false> | ExpertisesSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
   };
   locale: null;
   widgets: {
@@ -610,6 +612,50 @@ export interface Expertise {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  tagline?: string | null;
+  /**
+   * Drag to reorder. The icon comes from the platform chosen.
+   */
+  socials?:
+    | {
+        platform: 'facebook' | 'instagram' | 'x' | 'linkedin';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  navTitle?: string | null;
+  /**
+   * The entries come from Métiers automatically.
+   */
+  servicesTitle?: string | null;
+  contactTitle?: string | null;
+  navLinks?:
+    | {
+        label: string;
+        href: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * One line each. Emails and phone numbers become links.
+   */
+  contactLines?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  legal?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "stats_select".
  */
 export interface StatsSelect<T extends boolean = true> {
@@ -640,6 +686,41 @@ export interface ExpertisesSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  tagline?: T;
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  navTitle?: T;
+  servicesTitle?: T;
+  contactTitle?: T;
+  navLinks?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  contactLines?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  legal?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

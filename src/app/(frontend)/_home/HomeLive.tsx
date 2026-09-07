@@ -3,10 +3,12 @@
 import React from 'react'
 
 import { adaptExpertises } from '@/blocks/Expertises'
+import { adaptFooter } from '@/blocks/Footer'
 import { adaptProjects } from '@/blocks/Projects'
 import { adaptStats } from '@/blocks/Stats'
 import type {
   Expertise as PayloadExpertises,
+  Footer as PayloadFooter,
   Project as PayloadProject,
   Service as PayloadService,
   Stat as PayloadStats,
@@ -17,6 +19,7 @@ import { useGlobalPreview } from './useGlobalPreview'
 
 type Props = {
   expertisesDoc: PayloadExpertises
+  footerDoc: PayloadFooter
   projects: PayloadProject[]
   services: PayloadService[]
   statsDoc: PayloadStats
@@ -30,9 +33,10 @@ type Props = {
  * whose image is not a populated object, so a shallower merge would blank the
  * carousel every time the editor typed.
  */
-export const HomeLive: React.FC<Props> = ({ expertisesDoc, projects, services, statsDoc }) => {
+export const HomeLive: React.FC<Props> = ({ expertisesDoc, footerDoc, projects, services, statsDoc }) => {
   const expertises = useGlobalPreview<PayloadExpertises>('expertises', expertisesDoc, 1)
   const stats = useGlobalPreview<PayloadStats>('stats', statsDoc, 0)
+  const footer = useGlobalPreview<PayloadFooter>('footer', footerDoc, 0)
 
   // Services are a collection, so they arrive on the page's own live-preview
   // channel only when that document is the one being edited. Editing a service
@@ -41,6 +45,7 @@ export const HomeLive: React.FC<Props> = ({ expertisesDoc, projects, services, s
   return (
     <HomeView
       expertises={adaptExpertises(expertises, services)}
+      footer={adaptFooter(footer, services)}
       projects={adaptProjects(projects)}
       stats={adaptStats(stats)}
     />

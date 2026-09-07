@@ -2,22 +2,26 @@ import { getPayload } from 'payload'
 
 import config from '@/payload.config'
 import { adaptExpertises, type ExpertisesProps } from '@/blocks/Expertises'
+import { adaptFooter, type FooterProps } from '@/blocks/Footer'
 import { adaptProjects, type ProjectsProps } from '@/blocks/Projects'
 import { adaptStats, type StatsProps } from '@/blocks/Stats'
 import type {
   Expertise as PayloadExpertises,
+  Footer as PayloadFooter,
   Project as PayloadProject,
   Service as PayloadService,
   Stat as PayloadStats,
 } from '@/payload-types'
 
 export type HomeData = {
+  footer: FooterProps
   projects: ProjectsProps
   expertises: ExpertisesProps
   stats: StatsProps
 }
 
 export type HomeDocs = {
+  footerDoc: PayloadFooter
   projects: PayloadProject[]
   expertisesDoc: PayloadExpertises
   services: PayloadService[]
@@ -40,9 +44,10 @@ export const STATS_DEPTH = 0
 export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDocs> => {
   const payload = await getPayload({ config: await config })
 
-  const [expertisesDoc, statsDoc, servicesResult, projectsResult] = await Promise.all([
+  const [expertisesDoc, statsDoc, footerDoc, servicesResult, projectsResult] = await Promise.all([
     payload.findGlobal({ slug: 'expertises', draft, depth: EXPERTISES_DEPTH }),
     payload.findGlobal({ slug: 'stats', draft, depth: STATS_DEPTH }),
+    payload.findGlobal({ slug: 'footer', draft, depth: 0 }),
     payload.find({
       collection: 'services',
       draft,
@@ -64,6 +69,7 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
 
   return {
     expertisesDoc,
+    footerDoc,
     projects: projectsResult.docs,
     services: servicesResult.docs,
     statsDoc,
@@ -75,10 +81,11 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
  * live updates to apply.
  */
 export const getHomeData = async ({ draft }: { draft: boolean }): Promise<HomeData> => {
-  const { expertisesDoc, projects, services, statsDoc } = await getHomeDocs({ draft })
+  const { expertisesDoc, footerDoc, projects, services, statsDoc } = await getHomeDocs({ draft })
 
   return {
     expertises: adaptExpertises(expertisesDoc, services),
+    footer: adaptFooter(footerDoc, services),
     projects: adaptProjects(projects),
     stats: adaptStats(statsDoc),
   }
