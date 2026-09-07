@@ -124,7 +124,7 @@ export const FooterGlobal: GlobalConfig = {
       defaultValue: [
         { label: 'A propos', href: '#a-propos' },
         { label: 'Nos métiers', href: '#expertises' },
-        { label: 'Nos projets', href: '#projets' },
+        { label: 'Nos projets', href: '/projets' },
         { label: 'Actualités', href: '#actualites' },
         { label: 'Contact', href: '#contact' },
       ],

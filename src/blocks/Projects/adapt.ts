@@ -6,7 +6,7 @@ import type { ProjectsProps } from './types'
 const CHROME = {
   badge: 'Nos Réalisations',
   headingLines: ['Des espaces qui parlent', 'd’eux-mêmes.'],
-  cta: { label: 'Voir tous les projets', href: '#' },
+  cta: { label: 'Voir tous les projets', href: '/projets' },
 }
 
 /**
