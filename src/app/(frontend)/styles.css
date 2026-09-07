@@ -103,6 +103,37 @@
     }
   }
 
+  /*
+   * Faint lattice behind the dark sections.
+   *
+   * The design draws forty individual 1.26px lines per section; the spacing is a
+   * constant 80.69px in both directions, so two repeating gradients reproduce it
+   * exactly and cost nothing.
+   *
+   * Line colours are the design's rgba(245,242,235,·) multiplied by the group's
+   * 0.09 opacity. Actualités uses the same weight both ways; Contact draws its
+   * horizontals stronger than its verticals, hence the two variables.
+   */
+  .lattice {
+    --lattice-x: rgba(245, 242, 235, 0.077);
+    --lattice-y: rgba(245, 242, 235, 0.077);
+  }
+
+  .lattice--contact {
+    --lattice-x: rgba(245, 242, 235, 0.018);
+    --lattice-y: rgba(245, 242, 235, 0.065);
+  }
+
+  .lattice::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(to right, var(--lattice-x) 0 1.26px, transparent 1.26px 80.69px),
+      repeating-linear-gradient(to bottom, var(--lattice-y) 0 1.26px, transparent 1.26px 80.69px);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .marquee-track {
       animation: none;
