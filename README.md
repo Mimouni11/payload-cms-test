@@ -72,6 +72,20 @@ git add src/migrations src/collections
 git commit -m "feat(cms): add projets collection"
 ```
 
+> **Run those three before loading a page.** The moment you save the config, the dev
+> server hot-reloads and starts querying tables the migration has not created yet — you
+> will get `relation "…" does not exist` and a 500 until `migrate` runs. It looks alarming
+> and is not: the schema is simply behind the code for a few seconds.
+>
+> This is the cost of `push: false`. With push the dev server would create the table for
+> you and you would never see it — which is also how the schema silently drifted out of
+> version control and left production broken for two hours. The error is the trade.
+
+Some prompts to expect from `migrate:create`: when a table is added while another is
+removed, drizzle asks whether it is a **create** or a **rename**. Choose *create* unless
+the two really are the same table under a new name — the tables usually have different
+shapes, and answering "rename" keeps the wrong one.
+
 Netlify runs `payload migrate` before every build, so the deploy applies anything not yet
 recorded. Useful commands:
 

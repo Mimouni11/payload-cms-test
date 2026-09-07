@@ -43,14 +43,15 @@ Ordering below is by risk, not by how interesting the work is.
 
 ## Content model
 
-- [ ] **6. Projets carousel**
-      Analysed, not built. Four decisions still open:
-      - Do projects get detail pages, or is "LIRE" decorative for now?
-      - Tags: free text, fixed select, or a relationship to a services collection?
-        (Free text drifts from the expertise names; a relationship means promoting
-        expertises from a global to a collection.)
-      - Homepage selection: `featured` flag, or latest N?
-      - Dots: pages of two, or one card at a time?
+- [x] **6. Projets carousel** — done.
+      `Projects` collection with auto-generated slug, `sector`/`city`, `summary`, image,
+      a `relationship` to services for the tags, plus `featured` and `order`. Expertises
+      were promoted to a `services` collection first so the tags could reference them —
+      rename a service and every project's tag follows.
+      The carousel slides one card at a time rather than paging two, so an odd number of
+      projects never leaves a half-empty page, and autoplays with a hover pause.
+      Detail pages deliberately not built: slugs exist so they can be added without
+      backfilling published documents.
 
 - [ ] **7. Client logos are hardcoded**
       The marquee band is five entries in `ClientLogos/placeholder.ts` pointing at files
@@ -69,12 +70,42 @@ Ordering below is by risk, not by how interesting the work is.
       account can edit users and settings. This is the piece that makes a handoff to a
       non-technical client safe.
 
+- [ ] **16. Audit trail — who published what**
+      Verified against the schema: version tables (`_projects_v` and friends) store a full
+      snapshot, `_status` and timestamps, but **no user column**. So there is complete
+      history and no authorship — with two editors you cannot tell which of them published
+      something. Payload's open-source build has no audit log; that is an Enterprise feature.
+
+      Two options, and they solve different problems:
+
+      - **Author fields on the collections.** A `relationship` to users set by a
+        `beforeChange` hook from `req.user`. Because versions snapshot the whole document,
+        the author is captured in every version automatically and shows up in the Versions
+        tab. ~20 lines, reusable, needs a migration.
+        Blind spot: delete the document and the trail goes with it.
+      - **An `audit-log` collection.** `afterChange` / `afterDelete` hooks writing
+        `{ collection, docId, user, operation, status, timestamp }`. Heavier, but it records
+        deletions and survives the document being removed.
+
+      Gotcha for either: a hook writing through `req.payload` must pass `req` along, or the
+      write runs in its own transaction and can commit while the operation it is logging
+      rolls back.
+
+      Pairs with item 8 — roles decide who *can* act, the audit records who *did*. Together
+      they are the governance answer for the client handoff.
+
 ---
 
 ## SEO and polish
 
-- [ ] **9. `imageSizes` on the Media collection** — before launch. See `docs/seo.md`.
-      Without it the largest file on a page is whatever an editor happened to upload.
+- [x] **9. Upload sizing and format** — done, though not with `imageSizes`.
+      `resizeOptions` (2400px cap) + `formatOptions` (WebP q80) on the Media collection, so
+      every upload is converted and capped on the way in. Verified end to end: a 4000x3000
+      PNG stores as a 2400x1800 WebP.
+      `imageSizes` was skipped deliberately — it generates named variants, but the
+      components pass `media.url` and let `next/image` size things, so the variants would
+      sit unused. Revisit only if art-directed crops are ever needed.
+      Existing files were converted too: media 2691KB -> 550KB, static assets 378KB -> 260KB.
 
 - [ ] **10. `generateMetadata` and the SEO plugin** — before detail pages exist.
 
@@ -86,27 +117,18 @@ Ordering below is by risk, not by how interesting the work is.
 - [ ] **13. Logo as SVG** — the current `logo.png` is 122px wide and soft on retina.
       Needs the vector export from whoever owns the Figma file.
 
-- [ ] **14. Per-keystroke live preview**
-      `@payloadcms/live-preview` and `@payloadcms/live-preview-react` are installed but
-      never imported. Preview currently reflects changes on iframe reload, not as you type.
-      Adding `useLivePreview` to `/preview` would close that gap.
-      Two things to know before starting: the incoming message is admin **form state**, not
-      a document, so it must go through `mergeData` and then the existing `adapt*` functions;
-      and `useLivePreview` caches in a module-level singleton, so two hooks on one page
-      overwrite each other — a second previewing region needs a direct subscription filtered
-      on `globalSlug`.
+- [x] **14. Live preview subscription** — done.
+      `useGlobalPreview` subscribes to Payload's postMessage channel, filters on
+      `globalSlug`, and runs incoming data through `mergeData` before the adapters.
+      Not `useLivePreview` from the react package: it caches the merged document in a
+      module-level singleton, so two globals on one page overwrite each other.
+      Editing a **service or project** still reloads rather than streaming — collections
+      only broadcast the document currently open in the admin.
 
----
-
-## Done
-
-- Navbar, Hero, ClientLogos, Expertises and Stats sections built
-- Expertises and Stats editable through Payload globals
-- Media uploads stored in Cloudflare R2
-- Neon Postgres with an initial migration
-- Dev-only seed route
-- Tailwind v4 migration
-- Static homepage with `/preview` split, revalidation hooks and publish status indicator
-- Live preview subscription — edits appear without reloading the iframe
-- Schema managed by migrations; `netlify.toml` holds the build command
-- Docs: content architecture, rendering, SEO, admin UI
+- [ ] **15. Postgres pool settings**
+      A homepage request died with `read ECONNRESET` on `select count(*) from "services"`.
+      Neon's pooler closes idle connections and `pg` handed out a dead socket; requests
+      either side succeeded, so it is transient rather than a code fault.
+      Set `idleTimeoutMillis` below Neon's cutoff and a sane `max` on the adapter. Worth
+      doing before any demo — an intermittent 500 on the homepage is the worst possible
+      moment for it.
