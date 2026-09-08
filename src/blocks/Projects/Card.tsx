@@ -3,10 +3,10 @@ import React from 'react'
 
 import type { ProjectCardData } from './types'
 
-const Corner: React.FC = () => (
+const Corner: React.FC<{ size: number }> = ({ size }) => (
   <svg
-    width="14"
-    height="14"
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     aria-hidden="true"
     className="flex-none -scale-x-100"
@@ -23,16 +23,46 @@ const Corner: React.FC = () => (
 )
 
 /**
+ * Same card, two looks — a variant rather than a second component, per
+ * docs/content-architecture.md ("one section, several looks → variant").
+ *
+ * The index page is a wall of cards, so the design dials both red elements down:
+ * the tags wash out and the link drops to the muted grey. The carousel sits under
+ * a heading with only two cards showing, and keeps the red.
+ *
+ * Class strings are written out in full because Tailwind scans source text — a
+ * composed `bg-accent/${n}` would not survive the build.
+ */
+const VARIANTS = {
+  carousel: {
+    tag: 'bg-accent/8',
+    link: 'text-[12px] tracking-[0.14em] text-accent',
+    label: 'Lire',
+    icon: 14,
+  },
+  index: {
+    tag: 'bg-accent/4',
+    link: 'text-[14px] text-muted',
+    label: 'Voire le projet',
+    icon: 16,
+  },
+} as const
+
+export type ProjectCardVariant = keyof typeof VARIANTS
+
+/**
  * One project card. Shared by the homepage carousel and the /projets grid so the
  * two cannot drift — the carousel had its own copy until the index page needed
  * the same markup.
  *
- * Server component: nothing here is interactive.
+ * Server component: nothing here is interactive. `variant` is a plain string so
+ * it still crosses the boundary when the client-side carousel renders this.
  */
-export const ProjectCard: React.FC<{ project: ProjectCardData; sizes?: string }> = ({
-  project,
-  sizes = '(max-width: 768px) 100vw, 46vw',
-}) => (
+export const ProjectCard: React.FC<{
+  project: ProjectCardData
+  sizes?: string
+  variant?: ProjectCardVariant
+}> = ({ project, sizes = '(max-width: 768px) 100vw, 46vw', variant = 'carousel' }) => (
   <article className="flex flex-col">
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink/5">
       <Image
@@ -64,7 +94,7 @@ export const ProjectCard: React.FC<{ project: ProjectCardData; sizes?: string }>
       <ul className="mt-4 flex flex-wrap gap-2">
         {project.tags.map((tag) => (
           <li
-            className="rounded-md bg-accent/8 px-3 py-2 text-[13px] font-medium text-accent"
+            className={`rounded-md px-3 py-2 text-[13px] font-medium text-accent ${VARIANTS[variant].tag}`}
             key={tag}
           >
             {tag}
@@ -74,11 +104,11 @@ export const ProjectCard: React.FC<{ project: ProjectCardData; sizes?: string }>
     )}
 
     <a
-      className="mt-4 inline-flex items-center gap-2 text-[12px] font-medium tracking-[0.14em] text-accent uppercase transition-opacity hover:opacity-70"
+      className={`mt-4 inline-flex items-center gap-2 font-medium uppercase transition-opacity hover:opacity-70 ${VARIANTS[variant].link}`}
       href={project.href}
     >
-      <Corner />
-      Lire
+      <Corner size={VARIANTS[variant].icon} />
+      {VARIANTS[variant].label}
     </a>
   </article>
 )
