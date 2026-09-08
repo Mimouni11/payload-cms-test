@@ -27,6 +27,9 @@ const hero = {
   image: {
     src: asset('/projects_hero.webp'),
     alt: 'Vue en plongée d’un escalier dans un espace de bureaux',
+    // The atrium runs to the very bottom edge of the file, so a centred crop
+    // slices it in half. Anchoring low keeps it whole.
+    focalPoint: 'center bottom',
   },
 }
 

@@ -7,7 +7,8 @@ export const Hero: React.FC<HeroProps> = ({ badge, title, lede, cta, image }) =>
   return (
     <section className="relative isolate flex min-h-svh items-center overflow-hidden px-gutter pt-[120px] pb-[clamp(72px,12vh,132px)] text-white">
       <Image
-        className="-z-20 object-cover object-[center_62%]"
+        className="-z-20 object-cover"
+        style={{ objectPosition: image.focalPoint ?? 'center 62%' }}
         src={image.src}
         alt={image.alt}
         fill
