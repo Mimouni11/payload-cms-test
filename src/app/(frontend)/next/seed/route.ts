@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { clientLogosPlaceholder } from '@/blocks/ClientLogos'
 import { expertisesPlaceholder } from '@/blocks/Expertises'
 import { statsPlaceholder } from '@/blocks/Stats'
 
@@ -44,6 +45,35 @@ export async function GET(req: Request): Promise<Response> {
     await payload.updateGlobal({ slug: 'stats', data: { items: statsPlaceholder.items } })
     await payload.updateGlobal({ slug: 'stats', data: { _status: 'published' } })
     seeded.push(`stats (${statsPlaceholder.items.length})`)
+  }
+
+  // --- clients ---------------------------------------------------------
+  const existingClients = await payload.count({ collection: 'clients' })
+  if (existingClients.totalDocs === 0) {
+    for (const [index, logo] of clientLogosPlaceholder.items.entries()) {
+      const res = await fetch(logo.src)
+      if (!res.ok) continue
+
+      const data = Buffer.from(await res.arrayBuffer())
+      const name = logo.src.split('/').pop() ?? 'logo.webp'
+
+      const media = await payload.create({
+        collection: 'media',
+        data: { alt: logo.alt },
+        file: {
+          data,
+          name,
+          mimetype: res.headers.get('content-type') ?? 'image/webp',
+          size: data.length,
+        },
+      })
+
+      await payload.create({
+        collection: 'clients',
+        data: { name: logo.alt, logo: media.id, order: index + 1, _status: 'published' },
+      })
+    }
+    seeded.push(`clients (${clientLogosPlaceholder.items.length})`)
   }
 
   // --- expertises: heading in the global, entries in the services collection --

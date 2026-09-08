@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     services: Service;
     projects: Project;
+    clients: Client;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -83,6 +84,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    clients: ClientsSelect<false> | ClientsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -239,6 +241,34 @@ export interface Project {
    * Only featured projects appear in the homepage carousel.
    */
   featured?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Logos in the band under the hero.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients".
+ */
+export interface Client {
+  id: number;
+  /**
+   * Used as the logo’s alt text.
+   */
+  name: string;
+  /**
+   * The row scales every logo to the same height, so upload it trimmed to its own edges — extra padding makes it look smaller than its neighbours. Transparent PNG or SVG.
+   */
+  logo: number | Media;
+  /**
+   * Optional. Makes the logo a link.
+   */
+  website?: string | null;
   /**
    * Lower numbers appear first.
    */
@@ -482,6 +512,19 @@ export interface ProjectsSelect<T extends boolean = true> {
   image?: T;
   services?: T;
   featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients_select".
+ */
+export interface ClientsSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  website?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;

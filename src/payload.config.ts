@@ -11,6 +11,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Services } from './collections/Services'
 import { Projects } from './collections/Projects'
+import { Clients } from './collections/Clients'
 import { ExpertisesGlobal } from './blocks/Expertises/config'
 import { StatsGlobal } from './blocks/Stats/config'
 import { FooterGlobal } from './blocks/Footer/config'
@@ -39,7 +40,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Media, Services, Projects],
+  collections: [Users, Media, Services, Projects, Clients],
   globals: [SiteInfoGlobal, StatsGlobal, ExpertisesGlobal, FooterGlobal],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
