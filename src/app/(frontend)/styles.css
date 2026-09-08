@@ -19,6 +19,10 @@
   --color-accent: #a91e23;
   /* Muted blue-grey for secondary links. */
   --color-muted: #8d99ae;
+  /* The dark of the same blue-grey family, used for the /projets page title and
+     the inactive filter pills. Distinct from --color-ink, which stays the
+     near-black used for body copy and card titles. */
+  --color-navy: #2b2d42;
 
   /* next/font exposes these on <html>; aliased here so the utility names stay
      conventional and the variable is not self-referential. */

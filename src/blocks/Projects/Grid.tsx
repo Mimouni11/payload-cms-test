@@ -1,26 +1,33 @@
 import React from 'react'
 
-import { ProjectCard } from './Card'
+import { FilterableGrid } from './FilterableGrid'
 import type { ProjectCardData } from './types'
 
 /**
  * Every project, on the /projets index. The homepage shows a carousel of
  * featured ones; this shows the lot.
+ *
+ * Stays a server component — the section chrome is static HTML, and only the
+ * filter row and grid below it hydrate.
  */
 export const ProjectsGrid: React.FC<{ items: ProjectCardData[] }> = ({ items }) => {
   if (items.length === 0) return null
 
   return (
     <section className="bg-cream px-gutter py-[clamp(56px,7vw,96px)] text-ink">
-      <div className="grid gap-x-[clamp(24px,3vw,44px)] gap-y-[clamp(40px,5vw,72px)] md:grid-cols-2 lg:grid-cols-3">
-        {items.map((project) => (
-          <ProjectCard
-            key={project.href + project.title}
-            project={project}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 31vw"
-          />
-        ))}
-      </div>
+      {/* The hero already owns the h1, so the section title is an h2. Sized from
+          the design frame — ~72px at 1440. */}
+      <header className="mb-[clamp(32px,4vw,52px)]">
+        <p className="mb-7 inline-flex items-center gap-2 rounded-md border border-accent/30 px-3 py-2 text-[13px] font-medium text-accent">
+          <span aria-hidden="true" className="inline-block size-2.5 bg-accent" />
+          Nos réalisations
+        </p>
+        <h2 className="text-[clamp(2.4rem,5vw,4.5rem)] leading-[1.05] font-bold text-navy">
+          Nos Projets
+        </h2>
+      </header>
+
+      <FilterableGrid items={items} />
     </section>
   )
 }
