@@ -14,6 +14,7 @@ import { Projects } from './collections/Projects'
 import { ExpertisesGlobal } from './blocks/Expertises/config'
 import { StatsGlobal } from './blocks/Stats/config'
 import { FooterGlobal } from './blocks/Footer/config'
+import { SiteInfoGlobal } from './globals/SiteInfo'
 
 // R2 speaks the S3 API. Only enabled when credentials exist, so local dev
 // without them keeps writing uploads to disk instead of failing at boot.
@@ -39,7 +40,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Services, Projects],
-  globals: [StatsGlobal, ExpertisesGlobal, FooterGlobal],
+  globals: [SiteInfoGlobal, StatsGlobal, ExpertisesGlobal, FooterGlobal],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

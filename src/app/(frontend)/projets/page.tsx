@@ -33,10 +33,11 @@ const hero = {
 export default async function ProjectsPage() {
   const payload = await getPayload({ config: await config })
 
-  const [projectsResult, footerDoc, servicesResult] = await Promise.all([
+  const [projectsResult, footerDoc, siteInfo, servicesResult] = await Promise.all([
     // No `featured` filter here — that is what separates this from the homepage.
     payload.find({ collection: 'projects', depth: 1, limit: 100, sort: 'order' }),
     payload.findGlobal({ slug: 'footer', depth: 0 }),
+    payload.findGlobal({ slug: 'site-info', depth: 0 }),
     payload.find({ collection: 'services', depth: 0, limit: 20, sort: 'order' }),
   ])
 
@@ -50,7 +51,7 @@ export default async function ProjectsPage() {
       <div id="realisations">
         <ProjectsGrid items={projects.items} />
       </div>
-      <Footer {...adaptFooter(footerDoc, servicesResult.docs)} />
+      <Footer {...adaptFooter(footerDoc, servicesResult.docs, siteInfo)} />
     </>
   )
 }

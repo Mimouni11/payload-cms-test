@@ -5,9 +5,12 @@ import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
 /**
  * Footer content.
  *
- * The "Nos métiers" column is deliberately absent from these fields: it reads
- * from the `services` collection, so adding a métier puts it in the footer with
- * no second edit. Only its heading is editable here.
+ * Two columns are deliberately absent from these fields:
+ *   - "Nos métiers" reads from the `services` collection
+ *   - "Contact" reads from the `site-info` global
+ *
+ * Both are edited in one place and appear wherever they are used, rather than
+ * being retyped per section. Only their headings are editable here.
  */
 export const FooterGlobal: GlobalConfig = {
   slug: 'footer',
@@ -137,20 +140,6 @@ export const FooterGlobal: GlobalConfig = {
           ],
         },
       ],
-    },
-    {
-      name: 'contactLines',
-      type: 'array',
-      label: 'Coordonnées',
-      maxRows: 6,
-      labels: { singular: 'Ligne', plural: 'Lignes' },
-      admin: { description: 'One line each. Emails and phone numbers become links.' },
-      defaultValue: [
-        { text: 'Rue Fatma Ezzahra, Ariana' },
-        { text: '+216 31 536 548' },
-        { text: 'contact@groupebigart.tn' },
-      ],
-      fields: [{ name: 'text', type: 'text', required: true }],
     },
     {
       name: 'legal',

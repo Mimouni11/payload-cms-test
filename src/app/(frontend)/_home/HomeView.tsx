@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ClientLogos, clientLogosPlaceholder } from '@/blocks/ClientLogos'
-import { Contact, contactPlaceholder } from '@/blocks/Contact'
+import { Contact } from '@/blocks/Contact'
 import { Footer } from '@/blocks/Footer'
 import { Expertises } from '@/blocks/Expertises'
 import { Hero, heroPlaceholder } from '@/blocks/Hero'
@@ -17,7 +17,7 @@ import type { HomeData } from './getHomeData'
  *
  * Navbar, Hero and ClientLogos are still placeholder-driven — see backlog item 7.
  */
-export const HomeView: React.FC<HomeData> = ({ expertises, footer, projects, stats }) => (
+export const HomeView: React.FC<HomeData> = ({ contact, expertises, footer, projects, stats }) => (
   <>
     <Navbar {...navbarPlaceholder} />
     <Hero {...heroPlaceholder} />
@@ -26,7 +26,7 @@ export const HomeView: React.FC<HomeData> = ({ expertises, footer, projects, sta
     <Expertises {...expertises} />
     <Projects {...projects} />
     <News {...newsPlaceholder} />
-    <Contact {...contactPlaceholder} />
+    <Contact {...contact} />
     <Footer {...footer} />
   </>
 )

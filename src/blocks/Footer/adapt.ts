@@ -1,16 +1,25 @@
 import { asset } from '@/utilities/asset'
-import type { Footer as PayloadFooter, Service as PayloadService } from '@/payload-types'
+import type {
+  Footer as PayloadFooter,
+  Service as PayloadService,
+  SiteInfo as PayloadSiteInfo,
+} from '@/payload-types'
 
 import type { FooterProps, SocialPlatform } from './types'
 
 /**
  * Payload documents → component props.
  *
- * Two sources: the global owns the copy and links, the `services` collection
- * owns the "Nos métiers" column. Adding a métier puts it in the footer with no
- * second edit — which is the reason that column is not a field.
+ * Three sources: the footer global owns the copy and links, the `services`
+ * collection owns the "Nos métiers" column, and `site-info` owns the contact
+ * lines. Neither of the last two is a footer field — the address and the métiers
+ * are each written once and appear wherever they are used.
  */
-export const adaptFooter = (doc: PayloadFooter, services: PayloadService[]): FooterProps => ({
+export const adaptFooter = (
+  doc: PayloadFooter,
+  services: PayloadService[],
+  siteInfo: PayloadSiteInfo,
+): FooterProps => ({
   brand: {
     src: asset('/logo.webp'),
     alt: 'BigArt Group',
@@ -34,6 +43,10 @@ export const adaptFooter = (doc: PayloadFooter, services: PayloadService[]): Foo
     href: '#expertises',
   })),
   contactTitle: doc.contactTitle ?? undefined,
-  contactLines: (doc.contactLines ?? []).flatMap((row) => (row.text ? [row.text] : [])),
+  // `inFooter` lets an editor keep opening hours out of the footer while still
+  // showing them in the contact section.
+  contactLines: (siteInfo.details ?? []).flatMap((row) =>
+    row.value && row.inFooter !== false ? [row.value] : [],
+  ),
   legal: doc.legal ?? undefined,
 })
