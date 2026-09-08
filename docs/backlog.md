@@ -94,6 +94,73 @@ Ordering below is by risk, not by how interesting the work is.
       Pairs with item 8 — roles decide who *can* act, the audit records who *did*. Together
       they are the governance answer for the client handoff.
 
+- [ ] **17. Actualités → a collection (blocked: needs editorial input)**
+      Three hardcoded articles in `src/blocks/News/placeholder.ts`. Deliberately not built
+      yet — the content model depends on how the client actually intends to use the blog,
+      and guessing wrong here is expensive to undo once posts are published.
+
+      **The blocking question — categories.** The card shows `Signalétique. Juil 2025.`,
+      and *Signalétique* is a métier. Three ways to model it:
+      - **Relationship to `services`** — consistent with project tags, no drift, enables
+        "all Signalétique articles". But every article would have to be about a métier;
+        there is no room for *Événement* or *Vie de l'entreprise* without inventing fake
+        métiers.
+      - **Its own `categories` collection** — editors add categories freely without
+        polluting Métiers. Costs a collection, and "Signalétique" then exists in two places.
+      - **Free text** — drifts immediately, no filtering. Rejected for project tags for
+        exactly this reason.
+
+      **Also unresolved:**
+      - Do articles get detail pages at `/actualites/[slug]`? Both "LIRE" and "Voir toutes
+        les actualités" imply yes, and that decides whether a `body` rich-text field is
+        needed and which Lexical features it should allow.
+      - Is there a byline? Nothing in the design suggests one, but clients usually ask.
+      - Date precision: the design shows `Juil 2025`. Store a real `date` field and format
+        it in the adapter — not a text field — or sorting and filtering never work.
+      - Homepage selection: latest three, or a `featured` flag as Projects uses? Latest-N
+        means an accidental publish rearranges the homepage.
+      - Is there an `/actualites` index page as well as the homepage strip?
+
+      **Already settled by precedent, when it is built:**
+      - Slug generated on save, so detail pages can arrive later without backfilling
+        published documents (same as Projects).
+      - Add the new routes to `PATHS` in `src/hooks/revalidateHome.ts`. Forgetting this is
+        the failure that looks like caching and has no error attached to it.
+      - Section chrome (badge, heading, CTA) stays hardcoded, as it is for Projects.
+
+- [ ] **18. Question — should section headings be editable at all?**
+      Not a task yet. An open question about consistency, raised because the answer is
+      currently *"it depends which section"*, which is the worst of the options.
+
+      Today:
+
+      | Section | Heading editable? |
+      |---|---|
+      | Nos métiers | yes — `badge` and `headingLines` on the Expertises global |
+      | Pied de page | yes — the three column titles |
+      | Nos réalisations | no — `CHROME` in `src/blocks/Projects/adapt.ts` |
+      | Actualités | no — `src/blocks/News/placeholder.ts` |
+      | Contact | no — headings, form labels, chips, submit text |
+
+      Nothing signals to an editor which is which. They will change one heading, try the
+      next, and find no field — a panel that behaves unpredictably is worse than one that
+      is consistently limited.
+
+      **The question is which way to make it consistent**, and it is genuinely open:
+
+      - **Make them all editable.** A `badge` / `headingLines` / `cta` group per section,
+        the shape Expertises already uses. The panel becomes predictable and demos as
+        "the page is editable". Costs a handful of fields per section that will be edited
+        approximately never, and every one is a chance to break a deliberate line break —
+        the headings are set to wrap at a specific point.
+      - **Make them all hardcoded**, including removing the Expertises fields. Honest, and
+        matches the Navbar/Hero decision: this is typography, not content. But it takes
+        something away that already works.
+
+      Worth deciding before the client handoff rather than after, because whichever way it
+      goes, the answer should be the same everywhere. Related: the Navbar and Hero decision
+      under item 7.
+
 ---
 
 ## SEO and polish
