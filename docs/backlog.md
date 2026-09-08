@@ -53,17 +53,23 @@ Ordering below is by risk, not by how interesting the work is.
       Detail pages deliberately not built: slugs exist so they can be added without
       backfilling published documents.
 
-- [ ] **7. Client logos are hardcoded**
-      The marquee band is five entries in `ClientLogos/placeholder.ts` pointing at files
-      uploaded to R2 by hand. Winning a new client currently means a developer edits a
-      TypeScript file and deploys.
-      Smallest possible collection — `name`, `logo` upload, `order`, optional `website`.
-      One risk to design around: the row normalises every logo to 44px tall, so a badly
-      cropped upload will look wrong. Same exposure as project photos.
+- [x] **7. Client logo band** — done.
+      `Clients` collection — `name`, `logo`, optional `website`, `order` — read by both the
+      homepage and `/projets`. Adding a client is an upload in the admin, no deploy.
+      The five existing logos were re-uploaded through Payload by the seed route, so they
+      are Media documents now rather than files sitting in the bucket by hand.
+
+      Two details worth keeping:
+      - A `website` makes the logo a link, but the marquee repeats each logo three times to
+        fill the row, so **only the first copy is focusable** — otherwise tabbing walks the
+        same five brands fifteen times.
+      - The field description carries the design constraint: the row scales every logo to
+        one height, so padding baked into the file makes a logo look smaller than its
+        neighbours. An editor has no way to know that unless the field says so.
 
       **Decided: Navbar and Hero stay hardcoded.** That copy changes once a year, and the
       hero's layout depends on the headline breaking exactly where it does. Not worth the
-      fields.
+      fields. Same for the `/projets` hero.
 
 - [ ] **8. Payload roles**
       `admin` vs `editor`. Everything currently gates on "is anyone logged in", so any
