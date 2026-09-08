@@ -1,12 +1,14 @@
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { adaptClientLogos, type ClientLogosProps } from '@/blocks/ClientLogos'
 import { adaptContact, type ContactProps } from '@/blocks/Contact'
 import { adaptExpertises, type ExpertisesProps } from '@/blocks/Expertises'
 import { adaptFooter, type FooterProps } from '@/blocks/Footer'
 import { adaptProjects, type ProjectsProps } from '@/blocks/Projects'
 import { adaptStats, type StatsProps } from '@/blocks/Stats'
 import type {
+  Client as PayloadClient,
   Expertise as PayloadExpertises,
   Footer as PayloadFooter,
   Project as PayloadProject,
@@ -16,6 +18,7 @@ import type {
 } from '@/payload-types'
 
 export type HomeData = {
+  clientLogos: ClientLogosProps
   contact: ContactProps
   footer: FooterProps
   projects: ProjectsProps
@@ -24,6 +27,7 @@ export type HomeData = {
 }
 
 export type HomeDocs = {
+  clients: PayloadClient[]
   footerDoc: PayloadFooter
   siteInfo: PayloadSiteInfo
   projects: PayloadProject[]
@@ -48,12 +52,13 @@ export const STATS_DEPTH = 0
 export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDocs> => {
   const payload = await getPayload({ config: await config })
 
-  const [expertisesDoc, statsDoc, footerDoc, siteInfo, servicesResult, projectsResult] =
+  const [expertisesDoc, statsDoc, footerDoc, siteInfo, clientsResult, servicesResult, projectsResult] =
     await Promise.all([
     payload.findGlobal({ slug: 'expertises', draft, depth: EXPERTISES_DEPTH }),
     payload.findGlobal({ slug: 'stats', draft, depth: STATS_DEPTH }),
     payload.findGlobal({ slug: 'footer', draft, depth: 0 }),
     payload.findGlobal({ slug: 'site-info', draft, depth: 0 }),
+    payload.find({ collection: 'clients', draft, depth: 1, limit: 50, sort: 'order' }),
     payload.find({
       collection: 'services',
       draft,
@@ -77,6 +82,7 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
     expertisesDoc,
     footerDoc,
     siteInfo,
+    clients: clientsResult.docs,
     projects: projectsResult.docs,
     services: servicesResult.docs,
     statsDoc,
@@ -88,11 +94,12 @@ export const getHomeDocs = async ({ draft }: { draft: boolean }): Promise<HomeDo
  * live updates to apply.
  */
 export const getHomeData = async ({ draft }: { draft: boolean }): Promise<HomeData> => {
-  const { expertisesDoc, footerDoc, projects, services, siteInfo, statsDoc } =
+  const { clients, expertisesDoc, footerDoc, projects, services, siteInfo, statsDoc } =
     await getHomeDocs({ draft })
 
   return {
     expertises: adaptExpertises(expertisesDoc, services),
+    clientLogos: adaptClientLogos(clients),
     contact: adaptContact(siteInfo),
     footer: adaptFooter(footerDoc, services, siteInfo),
     projects: adaptProjects(projects),

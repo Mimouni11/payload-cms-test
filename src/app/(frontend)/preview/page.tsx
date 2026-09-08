@@ -19,11 +19,12 @@ export const dynamic = 'force-dynamic'
 
 export default async function PreviewPage() {
   const { isEnabled: draft } = await draftMode()
-  const { expertisesDoc, footerDoc, projects, services, siteInfo, statsDoc } =
+  const { clients, expertisesDoc, footerDoc, projects, services, siteInfo, statsDoc } =
     await getHomeDocs({ draft })
 
   return (
     <HomeLive
+      clients={clients}
       expertisesDoc={expertisesDoc}
       footerDoc={footerDoc}
       siteInfo={siteInfo}

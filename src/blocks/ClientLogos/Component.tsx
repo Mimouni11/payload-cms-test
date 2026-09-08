@@ -27,18 +27,38 @@ export const ClientLogos: React.FC<ClientLogosProps> = ({ items, speedSeconds = 
         className="marquee-track flex w-max items-center"
         style={{ ['--marquee-duration' as string]: `${speedSeconds}s` }}
       >
-        {track.map((logo, i) => (
-          <Image
-            className="marquee-item h-11 w-auto opacity-70 grayscale"
-            key={`${logo.src}-${i}`}
-            src={logo.src}
-            alt={logo.alt}
-            width={logo.width}
-            height={logo.height}
-            // The duplicates are decorative repeats of the same brands.
-            aria-hidden={i >= items.length}
-          />
-        ))}
+        {track.map((logo, i) => {
+          // The duplicates are decorative repeats of the same brands.
+          const duplicate = i >= items.length
+
+          const image = (
+            <Image
+              className="marquee-item h-11 w-auto opacity-70 grayscale"
+              src={logo.src}
+              alt={logo.alt}
+              width={logo.width}
+              height={logo.height}
+            />
+          )
+
+          // A repeat must not be focusable, or tabbing walks the same brands
+          // several times over.
+          return logo.href && !duplicate ? (
+            <a
+              key={`${logo.src}-${i}`}
+              href={logo.href}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="contents"
+            >
+              {image}
+            </a>
+          ) : (
+            <span key={`${logo.src}-${i}`} className="contents" aria-hidden={duplicate}>
+              {image}
+            </span>
+          )
+        })}
       </div>
     </section>
   )

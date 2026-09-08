@@ -4,6 +4,8 @@ export type ClientLogo = {
   /** Intrinsic size of the asset; CSS normalises every logo to one height. */
   width: number
   height: number
+  /** Optional — wraps the logo in a link when present. */
+  href?: string
 }
 
 export type ClientLogosProps = {

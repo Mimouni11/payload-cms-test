@@ -2,7 +2,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 
 import config from '@/payload.config'
-import { ClientLogos, clientLogosPlaceholder } from '@/blocks/ClientLogos'
+import { ClientLogos, adaptClientLogos } from '@/blocks/ClientLogos'
 import { Footer, adaptFooter } from '@/blocks/Footer'
 import { Hero } from '@/blocks/Hero'
 import { adaptProjects, ProjectsGrid } from '@/blocks/Projects'
@@ -33,12 +33,13 @@ const hero = {
 export default async function ProjectsPage() {
   const payload = await getPayload({ config: await config })
 
-  const [projectsResult, footerDoc, siteInfo, servicesResult] = await Promise.all([
+  const [projectsResult, footerDoc, siteInfo, servicesResult, clientsResult] = await Promise.all([
     // No `featured` filter here — that is what separates this from the homepage.
     payload.find({ collection: 'projects', depth: 1, limit: 100, sort: 'order' }),
     payload.findGlobal({ slug: 'footer', depth: 0 }),
     payload.findGlobal({ slug: 'site-info', depth: 0 }),
     payload.find({ collection: 'services', depth: 0, limit: 20, sort: 'order' }),
+    payload.find({ collection: 'clients', depth: 1, limit: 50, sort: 'order' }),
   ])
 
   const projects = adaptProjects(projectsResult.docs)
@@ -47,7 +48,7 @@ export default async function ProjectsPage() {
     <>
       <Navbar {...navbarPlaceholder} activeHref="/projets" />
       <Hero {...hero} />
-      <ClientLogos {...clientLogosPlaceholder} />
+      <ClientLogos {...adaptClientLogos(clientsResult.docs)} />
       <div id="realisations">
         <ProjectsGrid items={projects.items} />
       </div>

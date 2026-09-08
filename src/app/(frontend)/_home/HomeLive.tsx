@@ -2,12 +2,14 @@
 
 import React from 'react'
 
+import { adaptClientLogos } from '@/blocks/ClientLogos'
 import { adaptContact } from '@/blocks/Contact'
 import { adaptExpertises } from '@/blocks/Expertises'
 import { adaptFooter } from '@/blocks/Footer'
 import { adaptProjects } from '@/blocks/Projects'
 import { adaptStats } from '@/blocks/Stats'
 import type {
+  Client as PayloadClient,
   Expertise as PayloadExpertises,
   Footer as PayloadFooter,
   Project as PayloadProject,
@@ -20,6 +22,7 @@ import { HomeView } from './HomeView'
 import { useGlobalPreview } from './useGlobalPreview'
 
 type Props = {
+  clients: PayloadClient[]
   expertisesDoc: PayloadExpertises
   footerDoc: PayloadFooter
   siteInfo: PayloadSiteInfo
@@ -36,7 +39,7 @@ type Props = {
  * whose image is not a populated object, so a shallower merge would blank the
  * carousel every time the editor typed.
  */
-export const HomeLive: React.FC<Props> = ({ expertisesDoc, footerDoc, projects, services, siteInfo: siteInfoDoc, statsDoc }) => {
+export const HomeLive: React.FC<Props> = ({ clients, expertisesDoc, footerDoc, projects, services, siteInfo: siteInfoDoc, statsDoc }) => {
   const expertises = useGlobalPreview<PayloadExpertises>('expertises', expertisesDoc, 1)
   const stats = useGlobalPreview<PayloadStats>('stats', statsDoc, 0)
   const footer = useGlobalPreview<PayloadFooter>('footer', footerDoc, 0)
@@ -49,6 +52,7 @@ export const HomeLive: React.FC<Props> = ({ expertisesDoc, footerDoc, projects, 
   return (
     <HomeView
       expertises={adaptExpertises(expertises, services)}
+      clientLogos={adaptClientLogos(clients)}
       contact={adaptContact(siteInfo)}
       footer={adaptFooter(footer, services, siteInfo)}
       projects={adaptProjects(projects)}
