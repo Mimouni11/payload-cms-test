@@ -226,6 +226,13 @@ export interface Project {
    * Generated from the title if left empty. Used for the project page URL.
    */
   slug?: string | null;
+  /**
+   * Drives the filter buttons on the page Nos projets. A project without a category still appears under « Tous les projets », but no filter will find it.
+   */
+  category?: ('multinationales' | 'banques-assurances' | 'industrie' | 'sante') | null;
+  /**
+   * The line printed on the card, in your own words. Not the filter.
+   */
   sector?: string | null;
   city?: string | null;
   /**
@@ -506,6 +513,7 @@ export interface ServicesSelect<T extends boolean = true> {
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  category?: T;
   sector?: T;
   city?: T;
   summary?: T;

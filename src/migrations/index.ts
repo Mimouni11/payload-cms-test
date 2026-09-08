@@ -4,6 +4,7 @@ import * as migration_20260906_175641_add_projects from './20260906_175641_add_p
 import * as migration_20260907_192425_add_footer_global from './20260907_192425_add_footer_global';
 import * as migration_20260908_180522_add_site_info from './20260908_180522_add_site_info';
 import * as migration_20260908_184129_add_clients from './20260908_184129_add_clients';
+import * as migration_20260908_192808_add_project_category from './20260908_192808_add_project_category';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260908_184129_add_clients.up,
     down: migration_20260908_184129_add_clients.down,
-    name: '20260908_184129_add_clients'
+    name: '20260908_184129_add_clients',
+  },
+  {
+    up: migration_20260908_192808_add_project_category.up,
+    down: migration_20260908_192808_add_project_category.down,
+    name: '20260908_192808_add_project_category'
   },
 ];

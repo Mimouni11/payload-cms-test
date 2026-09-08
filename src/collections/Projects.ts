@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { PROJECT_CATEGORIES } from '@/blocks/Projects/categories'
 import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 
 /** "EY Ernst & Young" → "ey-ernst-young" */
@@ -33,7 +34,7 @@ export const Projects: CollectionConfig = {
   admin: {
     group: 'Content',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'sector', 'city', 'featured', 'order'],
+    defaultColumns: ['title', 'category', 'city', 'featured', 'order'],
     description: 'Projects shown in the "Nos réalisations" carousel.',
   },
   lockDocuments: false,
@@ -70,13 +71,27 @@ export const Projects: CollectionConfig = {
       },
     },
     {
+      name: 'category',
+      type: 'select',
+      label: 'Catégorie',
+      options: PROJECT_CATEGORIES.map(({ value, label }) => ({ value, label })),
+      admin: {
+        description:
+          'Drives the filter buttons on the page Nos projets. A project without a category still appears under « Tous les projets », but no filter will find it.',
+      },
+    },
+    {
       type: 'row',
       fields: [
         {
           name: 'sector',
           type: 'text',
           label: 'Secteur',
-          admin: { width: '50%', placeholder: 'Multinationale' },
+          admin: {
+            width: '50%',
+            placeholder: 'Multinationale',
+            description: 'The line printed on the card, in your own words. Not the filter.',
+          },
         },
         {
           name: 'city',

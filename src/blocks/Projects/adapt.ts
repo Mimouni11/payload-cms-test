@@ -24,6 +24,7 @@ export const adaptProjects = (docs: PayloadProject[]): ProjectsProps => ({
     return [
       {
         title: doc.title,
+        category: doc.category ?? undefined,
         sector: doc.sector ?? undefined,
         city: doc.city ?? undefined,
         summary: doc.summary ?? undefined,

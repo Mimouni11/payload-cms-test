@@ -4,6 +4,12 @@ export type ProjectCardData = {
   sector?: string
   city?: string
   summary?: string
+  /**
+   * Category slug, matching a `PROJECT_CATEGORIES` value. Drives the filter row
+   * on /projets and is never displayed — the visible line is `sector`.
+   * Undefined means the project only ever shows under "Tous les projets".
+   */
+  category?: string
   /** Service names, shown as tags. */
   tags: string[]
   href: string
