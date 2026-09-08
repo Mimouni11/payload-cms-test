@@ -167,6 +167,26 @@ Ordering below is by risk, not by how interesting the work is.
       goes, the answer should be the same everywhere. Related: the Navbar and Hero decision
       under item 7.
 
+- [ ] **19. Let the client create project categories**
+      The `/projets` filter row runs off a `category` **select** on the Projects collection,
+      with the four options from the design fixed in `src/blocks/Projects/categories.ts`.
+      Adding a fifth — Télécoms and BPO already exist as `sector` values with no matching
+      category — needs a developer, an edit, and a deploy. That is the one thing this
+      project is trying to get away from.
+
+      The fix is the pattern already used for Métiers: a **Secteurs collection**, with
+      `category` becoming a `relationship` to it. Editors add and reorder categories
+      themselves and the labels cannot drift, exactly as `Projects.services` → `Services`
+      works today.
+
+      Deferred deliberately, not overlooked — the select ships the design now, and the
+      migration to a relationship is mechanical once the client has told us what the real
+      category list is. Do it *before* they have tagged fifty projects, not after.
+
+      Note the two fields are not the same axis and should stay separate: `sector` is the
+      free-text line printed on the card ("Multinationale. Tunis."), `category` is the
+      filter bucket ("Multinationales").
+
 ---
 
 ## SEO and polish
