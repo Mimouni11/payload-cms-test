@@ -18,8 +18,9 @@ export const SiteInfoGlobal: GlobalConfig = {
     read: () => true,
   },
   admin: {
-    group: 'Content',
-    description: 'Used by the contact section, the map and the footer.',
+    group: 'Tout le site',
+    description:
+      'Visible sur : le pied de page de toutes les pages, et la section Contact de la page d’accueil (adresse, téléphone, e-mail et la carte).',
     components: {
       elements: {
         beforeDocumentControls: [
@@ -54,7 +55,7 @@ export const SiteInfoGlobal: GlobalConfig = {
       labels: { singular: 'Coordonnée', plural: 'Coordonnées' },
       admin: {
         description:
-          'Shown with a heading and icon in the contact section, and as plain lines in the footer. Drag to reorder.',
+          'Affichées avec un titre et une icône dans la section Contact, et en simples lignes dans le pied de page. Faites-les glisser pour changer l’ordre.',
       },
       defaultValue: [
         { label: 'Adresse', value: 'Rue Fatma Ezzahra, Ariana Tunisie', icon: 'location' },
@@ -104,7 +105,7 @@ export const SiteInfoGlobal: GlobalConfig = {
           defaultValue: true,
           label: 'Afficher dans le pied de page',
           admin: {
-            description: 'Opening hours are usually left out of the footer.',
+            description: 'Les horaires sont en général laissés hors du pied de page.',
           },
         },
       ],
@@ -115,7 +116,7 @@ export const SiteInfoGlobal: GlobalConfig = {
       label: 'Adresse pour la carte',
       admin: {
         description:
-          'Geocoded by the map provider. Leave empty to use the first address above.',
+          'L’adresse utilisée pour placer le repère sur la carte. Laissez vide pour utiliser la première adresse ci-dessus.',
         placeholder: 'Rue Fatma Ezzahra, Ariana, Tunisie',
       },
     },

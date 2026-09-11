@@ -16,7 +16,8 @@ export const StatsGlobal: GlobalConfig = {
     read: () => true,
   },
   admin: {
-    group: 'Content',
+    group: 'Page d’accueil',
+    description: 'Visible sur : la page d’accueil uniquement — la bande de chiffres.',
     components: {
       elements: {
         beforeDocumentControls: [
@@ -54,7 +55,10 @@ export const StatsGlobal: GlobalConfig = {
       minRows: 1,
       maxRows: 8,
       labels: { singular: 'Chiffre', plural: 'Chiffres' },
-      admin: { description: 'Drag to reorder. Shown left to right in the red band.' },
+      admin: {
+        description:
+          'Affichés de gauche à droite dans la bande rouge. Faites-les glisser pour changer l’ordre.',
+      },
       fields: [
         {
           type: 'row',
@@ -62,26 +66,29 @@ export const StatsGlobal: GlobalConfig = {
             {
               name: 'prefix',
               type: 'text',
-              label: 'Prefix',
-              admin: { width: '20%', placeholder: '+', description: 'Optional.' },
+              label: 'Préfixe',
+              admin: { width: '20%', placeholder: '+', description: 'Facultatif.' },
             },
             {
               name: 'value',
               type: 'number',
               required: true,
-              label: 'Number',
-              admin: { width: '30%', description: 'Digits only — this is what animates.' },
+              label: 'Nombre',
+              admin: {
+                width: '30%',
+                description: 'Chiffres uniquement : c’est ce nombre qui s’anime.',
+              },
             },
             {
               name: 'suffix',
               type: 'text',
-              label: 'Suffix',
-              admin: { width: '20%', placeholder: 'k', description: 'Optional.' },
+              label: 'Suffixe',
+              admin: { width: '20%', placeholder: 'k', description: 'Facultatif.' },
             },
             {
               name: 'decimals',
               type: 'number',
-              label: 'Decimals',
+              label: 'Décimales',
               defaultValue: 0,
               min: 0,
               max: 2,
@@ -93,7 +100,7 @@ export const StatsGlobal: GlobalConfig = {
           name: 'label',
           type: 'text',
           required: true,
-          label: 'Caption',
+          label: 'Légende',
           admin: { placeholder: 'ans d’expertise' },
         },
       ],

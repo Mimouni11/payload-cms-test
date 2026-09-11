@@ -19,7 +19,9 @@ export const FooterGlobal: GlobalConfig = {
     read: () => true,
   },
   admin: {
-    group: 'Content',
+    group: 'Tout le site',
+    description:
+      'Visible sur : le pied de page de toutes les pages. Les liens « Nos métiers » se remplissent tout seuls depuis la collection Métiers ; les coordonnées viennent de Coordonnées.',
     components: {
       elements: {
         beforeDocumentControls: [
@@ -58,7 +60,10 @@ export const FooterGlobal: GlobalConfig = {
       label: 'Réseaux sociaux',
       maxRows: 6,
       labels: { singular: 'Réseau', plural: 'Réseaux' },
-      admin: { description: 'Drag to reorder. The icon comes from the platform chosen.' },
+      admin: {
+        description:
+          'L’icône dépend de la plateforme choisie. Faites-les glisser pour changer l’ordre.',
+      },
       fields: [
         {
           type: 'row',
@@ -106,7 +111,7 @@ export const FooterGlobal: GlobalConfig = {
           defaultValue: 'Nos métiers',
           admin: {
             width: '33%',
-            description: 'The entries come from Métiers automatically.',
+            description: 'Les liens de cette colonne viennent automatiquement de Métiers.',
           },
         },
         {
@@ -135,8 +140,20 @@ export const FooterGlobal: GlobalConfig = {
         {
           type: 'row',
           fields: [
-            { name: 'label', type: 'text', required: true, admin: { width: '50%' } },
-            { name: 'href', type: 'text', required: true, admin: { width: '50%' } },
+            {
+              name: 'label',
+              type: 'text',
+              required: true,
+              label: 'Texte',
+              admin: { width: '50%' },
+            },
+            {
+              name: 'href',
+              type: 'text',
+              required: true,
+              label: 'Lien',
+              admin: { width: '50%', placeholder: '/projets' },
+            },
           ],
         },
       ],

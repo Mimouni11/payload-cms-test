@@ -23,10 +23,11 @@ export const Clients: CollectionConfig = {
     delete: ({ req: { user } }) => Boolean(user),
   },
   admin: {
-    group: 'Content',
+    group: 'Contenu',
     useAsTitle: 'name',
     defaultColumns: ['name', 'order', 'updatedAt'],
-    description: 'Logos in the band under the hero.',
+    description:
+      'Visible sur : le bandeau de logos sous la bannière, présent sur toutes les pages.',
   },
   lockDocuments: false,
   hooks: {
@@ -44,7 +45,7 @@ export const Clients: CollectionConfig = {
       label: 'Nom',
       admin: {
         placeholder: 'Inetum',
-        description: 'Used as the logo’s alt text.',
+        description: 'Sert aussi de texte alternatif au logo (lu par les lecteurs d’écran et Google).',
       },
     },
     {
@@ -55,7 +56,7 @@ export const Clients: CollectionConfig = {
       label: 'Logo',
       admin: {
         description:
-          'The row scales every logo to the same height, so upload it trimmed to its own edges — extra padding makes it look smaller than its neighbours. Transparent PNG or SVG.',
+          'Le bandeau affiche tous les logos à la même hauteur : importez-le recadré au plus près, car des marges en trop le font paraître plus petit que ses voisins. PNG transparent ou SVG.',
       },
     },
     {
@@ -64,17 +65,17 @@ export const Clients: CollectionConfig = {
       label: 'Site web',
       admin: {
         placeholder: 'https://…',
-        description: 'Optional. Makes the logo a link.',
+        description: 'Facultatif. Rend le logo cliquable.',
       },
     },
     {
       name: 'order',
       type: 'number',
       defaultValue: 0,
-      label: 'Sort order',
+      label: 'Ordre d’affichage',
       admin: {
         position: 'sidebar',
-        description: 'Lower numbers appear first.',
+        description: 'Les plus petits numéros apparaissent en premier.',
       },
     },
   ],

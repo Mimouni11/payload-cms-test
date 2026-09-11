@@ -1,0 +1,31 @@
+/**
+ * Admin panel overrides. Imported by `src/app/(payload)/layout.tsx`.
+ *
+ * Keep this file small and targeted. Payload's own class names are internal and
+ * can change between versions, so every selector here is a maintenance cost —
+ * anything achievable through config should be done through config instead.
+ */
+
+/**
+ * The "Visible sur : …" line on every collection and global.
+ *
+ * `.custom-view-description` is the wrapper Payload renders around
+ * `admin.description` — see `ViewDescription` in @payloadcms/ui. It is the same
+ * element in the collection list and in a document, so one rule covers both.
+ *
+ * Red because these lines say where an edit will actually show up, and an editor
+ * who skims past one changes the wrong page. Payload's default grey reads as
+ * boilerplate.
+ */
+.custom-view-description {
+  color: #a91e23;
+  font-weight: 500;
+}
+
+/**
+ * The brand red goes muddy on the dark panel, so lift it there rather than
+ * reusing the same hex. Same hue, enough contrast to stay legible.
+ */
+html[data-theme='dark'] .custom-view-description {
+  color: #f08e91;
+}

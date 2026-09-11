@@ -4,8 +4,17 @@ import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  labels: {
+    singular: 'Média',
+    plural: 'Médias',
+  },
   access: {
     read: () => true,
+  },
+  admin: {
+    group: 'Fichiers',
+    description:
+      'Toutes les images du site. Remplacer le fichier d’un média le change partout où il est utilisé — pour ne changer qu’un seul endroit, retirez l’image (×) dans la page concernée puis importez-en une nouvelle.',
   },
   hooks: {
     afterChange: [revalidateHomeCollection],
@@ -15,6 +24,11 @@ export const Media: CollectionConfig = {
       name: 'alt',
       type: 'text',
       required: true,
+      label: 'Texte alternatif',
+      admin: {
+        description:
+          'Une courte description de l’image, lue par les lecteurs d’écran et Google. Exemple : « Open space avec cloisons vitrées ».',
+      },
     },
   ],
   upload: {

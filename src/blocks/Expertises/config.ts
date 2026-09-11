@@ -19,8 +19,9 @@ export const ExpertisesGlobal: GlobalConfig = {
     read: () => true,
   },
   admin: {
-    group: 'Content',
-    description: 'The heading above the section. The entries are under Métiers.',
+    group: 'Page d’accueil',
+    description:
+      'Visible sur : la page d’accueil uniquement — le titre au-dessus de la section Nos métiers. Les métiers eux-mêmes se modifient dans Contenu → Métiers.',
     components: {
       elements: {
         beforeDocumentControls: [
@@ -54,18 +55,21 @@ export const ExpertisesGlobal: GlobalConfig = {
     {
       name: 'badge',
       type: 'text',
-      label: 'Label',
+      label: 'Surtitre',
       defaultValue: 'Nos métiers',
     },
     {
       name: 'headingLines',
       type: 'array',
-      label: 'Heading',
+      label: 'Titre',
       maxRows: 3,
-      labels: { singular: 'Line', plural: 'Lines' },
-      admin: { description: 'One row per line. The break is deliberate, not reflowed.' },
+      labels: { singular: 'Ligne', plural: 'Lignes' },
+      admin: {
+        description:
+          'Chaque ligne ajoutée ici s’affiche sur sa propre ligne à l’écran, quelle que soit la taille de l’écran.',
+      },
       defaultValue: [{ text: 'Six expertises.' }, { text: 'Une seule équipe.' }],
-      fields: [{ name: 'text', type: 'text', required: true }],
+      fields: [{ name: 'text', type: 'text', required: true, label: 'Texte' }],
     },
   ],
 }
