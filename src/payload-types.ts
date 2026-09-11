@@ -167,11 +167,16 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Toutes les images du site. Remplacer le fichier d’un média le change partout où il est utilisé — pour ne changer qu’un seul endroit, retirez l’image (×) dans la page concernée puis importez-en une nouvelle.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
+  /**
+   * Une courte description de l’image, lue par les lecteurs d’écran et Google. Exemple : « Open space avec cloisons vitrées ».
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -186,7 +191,7 @@ export interface Media {
   focalY?: number | null;
 }
 /**
- * Shown in the "Nos métiers" section, and used to tag projects.
+ * Visible sur : la page d’accueil (section Nos métiers), la page Nos métiers, et le menu du pied de page de toutes les pages. Sert aussi à étiqueter les réalisations.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
@@ -195,18 +200,34 @@ export interface Service {
   id: number;
   title: string;
   /**
-   * Shown when the accordion row is open. Optional.
+   * Affiché quand la ligne de l’accordéon est ouverte. Facultatif.
    */
   description?: string | null;
+  /**
+   * Affichée dans l’accordéon de la page d’accueil.
+   */
   image: number | Media;
   /**
-   * Overlaid on the photo, bottom left. Optional.
+   * Affichée sur la photo, en bas à gauche. Facultatif.
    */
   caption?: string | null;
+  /**
+   * Carrousel de la page Nos métiers. Ajoutez autant de photos que vous voulez et faites-les glisser pour changer l’ordre. Si la galerie est vide, le carrousel affiche la photo principale : rien ne casse, il ne défile simplement pas.
+   */
+  gallery?:
+    | {
+        image: number | Media;
+        /**
+         * Affichée dans la barre en bas de cette photo. Facultatif.
+         */
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   linkLabel?: string | null;
   linkHref?: string | null;
   /**
-   * Lower numbers appear first in the accordion.
+   * Les plus petits numéros apparaissent en premier.
    */
   order?: number | null;
   updatedAt: string;
@@ -214,7 +235,7 @@ export interface Service {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Projects shown in the "Nos réalisations" carousel.
+ * Visible sur : la page Nos projets (toutes), et le carrousel de la page d’accueil (uniquement celles cochées « Afficher sur la page d’accueil »).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects".
@@ -223,33 +244,33 @@ export interface Project {
   id: number;
   title: string;
   /**
-   * Generated from the title if left empty. Used for the project page URL.
+   * Rempli automatiquement à partir du titre si vous le laissez vide. Sert à l’adresse de la page du projet.
    */
   slug?: string | null;
   /**
-   * Drives the filter buttons on the page Nos projets. A project without a category still appears under « Tous les projets », but no filter will find it.
+   * Détermine les boutons de filtre de la page Nos projets. Un projet sans catégorie apparaît quand même dans « Tous les projets », mais aucun filtre ne le trouvera.
    */
   category?: ('multinationales' | 'banques-assurances' | 'industrie' | 'sante') | null;
   /**
-   * The line printed on the card, in your own words. Not the filter.
+   * La ligne affichée sur la carte, avec vos propres mots. Ce n’est pas le filtre.
    */
   sector?: string | null;
   city?: string | null;
   /**
-   * One or two lines, shown under the title on the card.
+   * Une ou deux lignes, affichées sous le titre sur la carte.
    */
   summary?: string | null;
   image: number | Media;
   /**
-   * Shown as tags on the card. Chosen from Métiers so the names cannot drift.
+   * Affichés en étiquettes sur la carte. Choisis dans la liste des Métiers pour que les noms restent toujours identiques.
    */
   services?: (number | Service)[] | null;
   /**
-   * Only featured projects appear in the homepage carousel.
+   * Seules les réalisations cochées apparaissent dans le carrousel de la page d’accueil.
    */
   featured?: boolean | null;
   /**
-   * Lower numbers appear first.
+   * Les plus petits numéros apparaissent en premier.
    */
   order?: number | null;
   updatedAt: string;
@@ -257,7 +278,7 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Logos in the band under the hero.
+ * Visible sur : le bandeau de logos sous la bannière, présent sur toutes les pages.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "clients".
@@ -265,19 +286,19 @@ export interface Project {
 export interface Client {
   id: number;
   /**
-   * Used as the logo’s alt text.
+   * Sert aussi de texte alternatif au logo (lu par les lecteurs d’écran et Google).
    */
   name: string;
   /**
-   * The row scales every logo to the same height, so upload it trimmed to its own edges — extra padding makes it look smaller than its neighbours. Transparent PNG or SVG.
+   * Le bandeau affiche tous les logos à la même hauteur : importez-le recadré au plus près, car des marges en trop le font paraître plus petit que ses voisins. PNG transparent ou SVG.
    */
   logo: number | Media;
   /**
-   * Optional. Makes the logo a link.
+   * Facultatif. Rend le logo cliquable.
    */
   website?: string | null;
   /**
-   * Lower numbers appear first.
+   * Les plus petits numéros apparaissent en premier.
    */
   order?: number | null;
   updatedAt: string;
@@ -499,6 +520,13 @@ export interface ServicesSelect<T extends boolean = true> {
   description?: T;
   image?: T;
   caption?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
   linkLabel?: T;
   linkHref?: T;
   order?: T;
@@ -610,7 +638,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Used by the contact section, the map and the footer.
+ * Visible sur : le pied de page de toutes les pages, et la section Contact de la page d’accueil (adresse, téléphone, e-mail et la carte).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-info".
@@ -618,7 +646,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteInfo {
   id: number;
   /**
-   * Shown with a heading and icon in the contact section, and as plain lines in the footer. Drag to reorder.
+   * Affichées avec un titre et une icône dans la section Contact, et en simples lignes dans le pied de page. Faites-les glisser pour changer l’ordre.
    */
   details?:
     | {
@@ -626,14 +654,14 @@ export interface SiteInfo {
         value: string;
         icon: 'location' | 'phone' | 'mail' | 'clock';
         /**
-         * Opening hours are usually left out of the footer.
+         * Les horaires sont en général laissés hors du pied de page.
          */
         inFooter?: boolean | null;
         id?: string | null;
       }[]
     | null;
   /**
-   * Geocoded by the map provider. Leave empty to use the first address above.
+   * L’adresse utilisée pour placer le repère sur la carte. Laissez vide pour utiliser la première adresse ci-dessus.
    */
   mapQuery?: string | null;
   _status?: ('draft' | 'published') | null;
@@ -641,26 +669,28 @@ export interface SiteInfo {
   createdAt?: string | null;
 }
 /**
+ * Visible sur : la page d’accueil uniquement — la bande de chiffres.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "stats".
  */
 export interface Stat {
   id: number;
   /**
-   * Drag to reorder. Shown left to right in the red band.
+   * Affichés de gauche à droite dans la bande rouge. Faites-les glisser pour changer l’ordre.
    */
   items?:
     | {
         /**
-         * Optional.
+         * Facultatif.
          */
         prefix?: string | null;
         /**
-         * Digits only — this is what animates.
+         * Chiffres uniquement : c’est ce nombre qui s’anime.
          */
         value: number;
         /**
-         * Optional.
+         * Facultatif.
          */
         suffix?: string | null;
         decimals?: number | null;
@@ -673,7 +703,7 @@ export interface Stat {
   createdAt?: string | null;
 }
 /**
- * The heading above the section. The entries are under Métiers.
+ * Visible sur : la page d’accueil uniquement — le titre au-dessus de la section Nos métiers. Les métiers eux-mêmes se modifient dans Contenu → Métiers.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "expertises".
@@ -682,7 +712,7 @@ export interface Expertise {
   id: number;
   badge?: string | null;
   /**
-   * One row per line. The break is deliberate, not reflowed.
+   * Chaque ligne ajoutée ici s’affiche sur sa propre ligne à l’écran, quelle que soit la taille de l’écran.
    */
   headingLines?:
     | {
@@ -695,6 +725,8 @@ export interface Expertise {
   createdAt?: string | null;
 }
 /**
+ * Visible sur : le pied de page de toutes les pages. Les liens « Nos métiers » se remplissent tout seuls depuis la collection Métiers ; les coordonnées viennent de Coordonnées.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
@@ -702,7 +734,7 @@ export interface Footer {
   id: number;
   tagline?: string | null;
   /**
-   * Drag to reorder. The icon comes from the platform chosen.
+   * L’icône dépend de la plateforme choisie. Faites-les glisser pour changer l’ordre.
    */
   socials?:
     | {
@@ -713,7 +745,7 @@ export interface Footer {
     | null;
   navTitle?: string | null;
   /**
-   * The entries come from Métiers automatically.
+   * Les liens de cette colonne viennent automatiquement de Métiers.
    */
   servicesTitle?: string | null;
   contactTitle?: string | null;
