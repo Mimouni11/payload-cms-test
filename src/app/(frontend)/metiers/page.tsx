@@ -3,6 +3,7 @@ import React from 'react'
 
 import config from '@/payload.config'
 import { ClientLogos, adaptClientLogos } from '@/blocks/ClientLogos'
+import { Contact, adaptContact } from '@/blocks/Contact'
 import { Footer, adaptFooter } from '@/blocks/Footer'
 import { Hero } from '@/blocks/Hero'
 import { Metiers, adaptMetiers } from '@/blocks/Metiers'
@@ -13,7 +14,7 @@ import '../styles.css'
 /**
  * "Nos métiers".
  *
- * Same chrome as /projets — navbar, hero, client logos, footer — with its own
+ * Same chrome as /projets — navbar, hero, client logos, contact, footer — with its own
  * hero image and copy. Static, and listed in `revalidateHome`'s PATHS so the
  * client band here rebuilds with everything else.
  *
@@ -60,6 +61,7 @@ export default async function MetiersPage() {
       <Hero {...hero} />
       <ClientLogos {...adaptClientLogos(clientsResult.docs)} />
       <Metiers {...adaptMetiers(servicesResult.docs)} />
+      <Contact {...adaptContact(siteInfo)} />
       <Footer {...adaptFooter(footerDoc, servicesResult.docs, siteInfo)} />
     </>
   )

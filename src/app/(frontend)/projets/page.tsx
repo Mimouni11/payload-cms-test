@@ -3,6 +3,7 @@ import React from 'react'
 
 import config from '@/payload.config'
 import { ClientLogos, adaptClientLogos } from '@/blocks/ClientLogos'
+import { Contact, adaptContact } from '@/blocks/Contact'
 import { Footer, adaptFooter } from '@/blocks/Footer'
 import { Hero } from '@/blocks/Hero'
 import { adaptProjects, ProjectsGrid } from '@/blocks/Projects'
@@ -13,7 +14,7 @@ import '../styles.css'
 /**
  * Every project, not just the featured ones.
  *
- * Same chrome as the homepage — navbar, hero, client logos, footer — with a
+ * Same chrome as the homepage — navbar, hero, client logos, contact, footer — with a
  * different hero image and copy. Static like `/`, and kept current by the same
  * revalidation hook, which lists this path.
  */
@@ -55,6 +56,7 @@ export default async function ProjectsPage() {
       <div id="realisations">
         <ProjectsGrid items={projects.items} />
       </div>
+      <Contact {...adaptContact(siteInfo)} />
       <Footer {...adaptFooter(footerDoc, servicesResult.docs, siteInfo)} />
     </>
   )
