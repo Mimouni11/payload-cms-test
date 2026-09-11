@@ -108,24 +108,26 @@
   }
 
   /*
-   * Faint lattice behind the dark sections.
+   * Faint lattice behind a section.
    *
    * The design draws forty individual 1.26px lines per section; the spacing is a
    * constant 80.69px in both directions, so two repeating gradients reproduce it
    * exactly and cost nothing.
    *
-   * Line colours are the design's rgba(245,242,235,·) multiplied by the group's
-   * 0.09 opacity. Actualités uses the same weight both ways; Contact draws its
-   * horizontals stronger than its verticals, hence the two variables.
+   * The default is light lines for the dark Actualités section: the design's
+   * rgba(245,242,235,·) multiplied by the group's 0.09 opacity, same weight both
+   * ways. `--lattice-x` colours the vertical lines, `--lattice-y` the horizontals.
    */
   .lattice {
     --lattice-x: rgba(245, 242, 235, 0.077);
     --lattice-y: rgba(245, 242, 235, 0.077);
   }
 
+  /* Contact is on cream, so its lines are ink. Horizontals stay stronger than
+     verticals, as in the design. */
   .lattice--contact {
-    --lattice-x: rgba(245, 242, 235, 0.018);
-    --lattice-y: rgba(245, 242, 235, 0.065);
+    --lattice-x: rgba(23, 24, 23, 0.03);
+    --lattice-y: rgba(23, 24, 23, 0.07);
   }
 
   .lattice::before {

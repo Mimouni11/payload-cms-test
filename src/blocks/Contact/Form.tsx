@@ -24,10 +24,14 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
       current.includes(service) ? current.filter((s) => s !== service) : [...current, service],
     )
 
-  const row = 'flex flex-col gap-2 border-b border-white/10 py-5 md:flex-row md:items-center md:gap-8'
-  const label = 'w-[130px] shrink-0 text-[14px] font-normal text-[#E4E4E4]'
+  const row = 'flex flex-col gap-2 border-b border-ink/10 py-5 md:flex-row md:items-center md:gap-8'
+  const label = 'w-[130px] shrink-0 text-[14px] font-normal text-ink'
   const input =
-    'w-full bg-transparent text-[clamp(1.25rem,2.2vw,2rem)] font-semibold text-[#E5E5E5] outline-none placeholder:text-[#E5E5E5]/25'
+    'w-full bg-transparent text-[clamp(1.25rem,2.2vw,2rem)] font-semibold text-ink outline-none placeholder:text-ink/40'
+
+  // The asterisk is for sighted users; the `required` attribute on the input is
+  // what screen readers announce, so the mark itself is hidden from them.
+  const requiredMark = <span aria-hidden="true">*</span>
 
   return (
     <form
@@ -40,12 +44,14 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
       <div className={row}>
         <label className={label} htmlFor="contact-name">
           {fields.name.label}
+          {requiredMark}
         </label>
         <input
           className={input}
           id="contact-name"
           name="name"
           type="text"
+          required
           placeholder={fields.name.placeholder}
         />
       </div>
@@ -53,12 +59,14 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
       <div className={row}>
         <label className={label} htmlFor="contact-company">
           {fields.company.label}
+          {requiredMark}
         </label>
         <input
           className={input}
           id="contact-company"
           name="company"
           type="text"
+          required
           placeholder={fields.company.placeholder}
         />
       </div>
@@ -66,12 +74,14 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
       <div className={row}>
         <label className={label} htmlFor="contact-email">
           {fields.email.label}
+          {requiredMark}
         </label>
         <input
           className={input}
           id="contact-email"
           name="email"
           type="email"
+          required
           placeholder={fields.email.placeholder}
         />
       </div>
@@ -90,7 +100,7 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
       </div>
 
       <fieldset className="mt-8">
-        <legend className="mb-5 text-[12px] font-normal tracking-[1.95px] text-[#E4E4E4]">
+        <legend className="mb-5 text-[12px] font-normal tracking-[1.95px] text-ink">
           {servicesLabel}
         </legend>
 
@@ -104,10 +114,10 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
                 key={service}
                 onClick={() => toggle(service)}
                 aria-pressed={active}
-                className={`h-10 rounded-md px-4 text-[12px] font-medium transition-colors ${
+                className={`h-10 rounded-md border px-4 text-[12px] font-medium transition-colors ${
                   active
-                    ? 'bg-accent text-white'
-                    : 'bg-[#E5E5E5]/16 text-[#E5E5E5]/90 hover:bg-[#E5E5E5]/24'
+                    ? 'border-accent/50 bg-accent/10 text-accent'
+                    : 'border-ink/15 bg-white/50 text-ink/85 hover:border-ink/35'
                 }`}
               >
                 {service}
@@ -116,7 +126,6 @@ export const Form: React.FC<Props> = ({ fields, servicesLabel, services, formId 
           })}
         </div>
       </fieldset>
-
     </form>
   )
 }

@@ -36,7 +36,7 @@ const Icon: React.FC<{ name: ContactDetail['icon'] }> = ({ name }) => (
     height="20"
     viewBox="0 0 24 24"
     aria-hidden="true"
-    className="mt-px flex-none text-[#E5E5E5]/50"
+    className="mt-px flex-none text-ink/55"
     fill="none"
     stroke="currentColor"
     strokeWidth="1.5"
@@ -56,9 +56,7 @@ const Icon: React.FC<{ name: ContactDetail['icon'] }> = ({ name }) => (
  * it needs no key and sets no cookies, but it takes a bounding box rather than a
  * query, which would have meant typing in coordinates by hand.
  *
- * The design's map is dark and this provider's tiles are light, so the frame is
- * inverted and hue-rotated back — the standard way to darken raster tiles
- * without a styling API. Labels end up slightly grey; that is the trade.
+ * Shown in the provider's own light tiles, which match the cream section.
  *
  * Note: this embed sets third-party cookies. If that matters for the contact
  * page, swap it for a static map image or a click-to-load placeholder.
@@ -74,13 +72,13 @@ const MapPanel: React.FC<{ query: string; label: string }> = ({ query, label }) 
       rel="noreferrer noopener"
     >
       <iframe
-        className="pointer-events-none size-full border-0 [filter:invert(1)_hue-rotate(180deg)_brightness(0.94)_contrast(1.04)]"
+        className="pointer-events-none size-full border-0"
         src={`https://www.google.com/maps?q=${search}&z=14&output=embed`}
         title={label}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-      <span className="absolute inset-0 ring-1 ring-white/10 transition-colors group-hover:ring-white/25" />
+      <span className="absolute inset-0 ring-1 ring-ink/10 transition-colors group-hover:ring-ink/25" />
     </a>
   )
 }
@@ -101,11 +99,11 @@ export const Contact: React.FC<ContactProps> = ({
 }) => (
   <section
     id="contact"
-    className="lattice lattice--contact relative overflow-hidden bg-ink px-gutter py-[clamp(56px,7vw,96px)] text-[#E5E5E5]"
+    className="lattice lattice--contact relative overflow-hidden bg-cream px-gutter py-[clamp(56px,7vw,96px)] text-ink"
   >
     <div className="relative grid gap-[clamp(40px,5vw,72px)] lg:grid-cols-[minmax(0,826fr)_minmax(0,364fr)]">
       <div>
-        <h2 className="mb-[clamp(32px,4vw,56px)] text-[clamp(2.4rem,6.6vw,6rem)] leading-[0.82] font-bold tracking-[-0.015em]">
+        <h2 className="mb-[clamp(32px,4vw,56px)] text-[clamp(2.25rem,4.4vw,4rem)] leading-[0.95] font-bold tracking-[-0.015em]">
           {headingLines.map((line) => (
             <span className="block" key={line}>
               {line}
@@ -126,10 +124,10 @@ export const Contact: React.FC<ContactProps> = ({
 
         {details.map((detail) => (
           <div key={detail.label}>
-            <h3 className="mb-2 font-serif text-[24px] leading-[1.1] font-semibold text-[#E5E5E5]">
+            <h3 className="mb-2 font-serif text-[24px] leading-[1.1] font-semibold">
               {detail.label}
             </h3>
-            <p className="flex items-start gap-2 text-[16px] leading-[1.1] font-medium text-[#E5E5E5]">
+            <p className="flex items-start gap-2 text-[16px] leading-[1.1] font-medium">
               <Icon name={detail.icon} />
               {detail.value}
             </p>
@@ -145,7 +143,7 @@ export const Contact: React.FC<ContactProps> = ({
       <button
         type="submit"
         form={FORM_ID}
-        className="h-11 w-full rounded-md bg-accent px-6 text-[14px] font-semibold text-[#E5E5E5] transition hover:-translate-y-0.5 md:w-[240px]"
+        className="h-11 w-full rounded-md bg-accent px-6 text-[14px] font-semibold text-white transition hover:-translate-y-0.5 md:w-[240px]"
       >
         {submitLabel}
       </button>

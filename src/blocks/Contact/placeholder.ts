@@ -5,7 +5,7 @@ import type { ContactProps } from './types'
  * anywhere yet, see the note in Form.tsx.
  */
 export const contactPlaceholder: ContactProps = {
-  headingLines: ['Envoyer un', 'message.'],
+  headingLines: ['Envoyer un message.'],
   map: {
     query: 'Rue Fatma Ezzahra, Ariana, Tunisie',
     label: 'Carte — Rue Fatma Ezzahra, Ariana, Tunisie',
