@@ -2,6 +2,8 @@ import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { en } from '@payloadcms/translations/languages/en'
+import { fr } from '@payloadcms/translations/languages/fr'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -42,6 +44,13 @@ export default buildConfig({
   },
   collections: [Users, Media, Services, Projects, Clients],
   globals: [SiteInfoGlobal, StatsGlobal, ExpertisesGlobal, FooterGlobal],
+  // Each user picks their language on their account page; a first login follows
+  // the browser. French is the fallback because the client's team works in it.
+  // Our own labels are { fr, en } pairs — the shared ones are in src/admin/i18n.ts.
+  i18n: {
+    supportedLanguages: { fr, en },
+    fallbackLanguage: 'fr',
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

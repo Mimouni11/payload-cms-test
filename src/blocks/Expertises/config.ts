@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { GROUP } from '@/admin/i18n'
 import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
 
 /**
@@ -14,14 +15,16 @@ import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
  */
 export const ExpertisesGlobal: GlobalConfig = {
   slug: 'expertises',
-  label: 'Nos métiers (titre)',
+  label: { fr: 'Nos métiers (titre)', en: 'Nos métiers (heading)' },
   access: {
     read: () => true,
   },
   admin: {
-    group: 'Page d’accueil',
-    description:
-      'Visible sur : la page d’accueil uniquement — le titre au-dessus de la section Nos métiers. Les métiers eux-mêmes se modifient dans Contenu → Métiers.',
+    group: GROUP.home,
+    description: {
+      fr: 'Visible sur : la page d’accueil uniquement — le titre au-dessus de la section Nos métiers. Les métiers eux-mêmes se modifient dans Contenu → Métiers.',
+      en: 'Visible on: the homepage only — the heading above the Nos métiers section. The services themselves are edited in Content → Services.',
+    },
     components: {
       elements: {
         beforeDocumentControls: [
@@ -55,21 +58,28 @@ export const ExpertisesGlobal: GlobalConfig = {
     {
       name: 'badge',
       type: 'text',
-      label: 'Surtitre',
+      label: { fr: 'Surtitre', en: 'Label above the heading' },
       defaultValue: 'Nos métiers',
     },
     {
       name: 'headingLines',
       type: 'array',
-      label: 'Titre',
+      label: { fr: 'Titre', en: 'Heading' },
       maxRows: 3,
-      labels: { singular: 'Ligne', plural: 'Lignes' },
+      labels: {
+        singular: { fr: 'Ligne', en: 'Line' },
+        plural: { fr: 'Lignes', en: 'Lines' },
+      },
       admin: {
-        description:
-          'Chaque ligne ajoutée ici s’affiche sur sa propre ligne à l’écran, quelle que soit la taille de l’écran.',
+        description: {
+          fr: 'Chaque ligne ajoutée ici s’affiche sur sa propre ligne à l’écran, quelle que soit la taille de l’écran.',
+          en: 'Each line added here shows on its own line on screen, whatever the screen size.',
+        },
       },
       defaultValue: [{ text: 'Six expertises.' }, { text: 'Une seule équipe.' }],
-      fields: [{ name: 'text', type: 'text', required: true, label: 'Texte' }],
+      fields: [
+        { name: 'text', type: 'text', required: true, label: { fr: 'Texte', en: 'Text' } },
+      ],
     },
   ],
 }

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { GROUP, ORDER } from '@/admin/i18n'
 import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 
 /**
@@ -15,8 +16,8 @@ import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 export const Services: CollectionConfig = {
   slug: 'services',
   labels: {
-    singular: 'Métier',
-    plural: 'Métiers',
+    singular: { fr: 'Métier', en: 'Service' },
+    plural: { fr: 'Métiers', en: 'Services' },
   },
   access: {
     read: () => true,
@@ -25,11 +26,13 @@ export const Services: CollectionConfig = {
     delete: ({ req: { user } }) => Boolean(user),
   },
   admin: {
-    group: 'Contenu',
+    group: GROUP.content,
     useAsTitle: 'title',
     defaultColumns: ['title', 'order', 'updatedAt'],
-    description:
-      'Visible sur : la page d’accueil (section Nos métiers), la page Nos métiers, et le menu du pied de page de toutes les pages. Sert aussi à étiqueter les réalisations.',
+    description: {
+      fr: 'Visible sur : la page d’accueil (section Nos métiers), la page Nos métiers, et le menu du pied de page de toutes les pages. Sert aussi à étiqueter les réalisations.',
+      en: 'Visible on: the homepage (Nos métiers section), the Nos métiers page, and the footer menu on every page. Also used to tag projects.',
+    },
   },
   lockDocuments: false,
   hooks: {
@@ -44,37 +47,54 @@ export const Services: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      label: 'Titre',
+      label: { fr: 'Titre', en: 'Title' },
       admin: { placeholder: 'Cloisonnement' },
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Texte',
-      admin: { description: 'Affiché quand la ligne de l’accordéon est ouverte. Facultatif.' },
+      label: { fr: 'Texte', en: 'Text' },
+      admin: {
+        description: {
+          fr: 'Affiché quand la ligne de l’accordéon est ouverte. Facultatif.',
+          en: 'Shown when the accordion row is open. Optional.',
+        },
+      },
     },
     {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
       required: true,
-      label: 'Photo principale',
-      admin: { description: 'Affichée dans l’accordéon de la page d’accueil.' },
+      label: { fr: 'Photo principale', en: 'Main photo' },
+      admin: {
+        description: {
+          fr: 'Affichée dans l’accordéon de la page d’accueil.',
+          en: 'Shown in the accordion on the homepage.',
+        },
+      },
     },
     {
       name: 'caption',
       type: 'text',
-      label: 'Légende de la photo principale',
-      admin: { description: 'Affichée sur la photo, en bas à gauche. Facultatif.' },
+      label: { fr: 'Légende de la photo principale', en: 'Main photo caption' },
+      admin: {
+        description: {
+          fr: 'Affichée sur la photo, en bas à gauche. Facultatif.',
+          en: 'Shown on the photo, bottom left. Optional.',
+        },
+      },
     },
     {
       name: 'gallery',
       type: 'array',
-      label: 'Galerie',
+      label: { fr: 'Galerie', en: 'Gallery' },
       labels: { singular: 'Photo', plural: 'Photos' },
       admin: {
-        description:
-          'Carrousel de la page Nos métiers. Ajoutez autant de photos que vous voulez et faites-les glisser pour changer l’ordre. Si la galerie est vide, le carrousel affiche la photo principale : rien ne casse, il ne défile simplement pas.',
+        description: {
+          fr: 'Carrousel de la page Nos métiers. Ajoutez autant de photos que vous voulez et faites-les glisser pour changer l’ordre. Si la galerie est vide, le carrousel affiche la photo principale : rien ne casse, il ne défile simplement pas.',
+          en: 'Carousel on the Nos métiers page. Add as many photos as you like and drag them to reorder. If the gallery is empty, the carousel shows the main photo: nothing breaks, it just won’t scroll.',
+        },
       },
       fields: [
         {
@@ -87,9 +107,12 @@ export const Services: CollectionConfig = {
         {
           name: 'caption',
           type: 'text',
-          label: 'Légende',
+          label: { fr: 'Légende', en: 'Caption' },
           admin: {
-            description: 'Affichée dans la barre en bas de cette photo. Facultatif.',
+            description: {
+              fr: 'Affichée dans la barre en bas de cette photo. Facultatif.',
+              en: 'Shown in the bar across the bottom of this photo. Optional.',
+            },
           },
         },
       ],
@@ -100,14 +123,14 @@ export const Services: CollectionConfig = {
         {
           name: 'linkLabel',
           type: 'text',
-          label: 'Texte du lien',
+          label: { fr: 'Texte du lien', en: 'Link text' },
           defaultValue: 'Découvrir',
           admin: { width: '50%' },
         },
         {
           name: 'linkHref',
           type: 'text',
-          label: 'Adresse du lien',
+          label: { fr: 'Adresse du lien', en: 'Link URL' },
           defaultValue: '#',
           admin: { width: '50%' },
         },
@@ -117,10 +140,10 @@ export const Services: CollectionConfig = {
       name: 'order',
       type: 'number',
       defaultValue: 0,
-      label: 'Ordre d’affichage',
+      label: ORDER.label,
       admin: {
         position: 'sidebar',
-        description: 'Les plus petits numéros apparaissent en premier.',
+        description: ORDER.description,
       },
     },
   ],

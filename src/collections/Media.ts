@@ -1,20 +1,23 @@
 import type { CollectionConfig } from 'payload'
 
+import { GROUP } from '@/admin/i18n'
 import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
-    singular: 'Média',
-    plural: 'Médias',
+    singular: { fr: 'Média', en: 'Media' },
+    plural: { fr: 'Médias', en: 'Media' },
   },
   access: {
     read: () => true,
   },
   admin: {
-    group: 'Fichiers',
-    description:
-      'Toutes les images du site. Remplacer le fichier d’un média le change partout où il est utilisé — pour ne changer qu’un seul endroit, retirez l’image (×) dans la page concernée puis importez-en une nouvelle.',
+    group: GROUP.files,
+    description: {
+      fr: 'Toutes les images du site. Remplacer le fichier d’un média le change partout où il est utilisé — pour ne changer qu’un seul endroit, retirez l’image (×) dans la page concernée puis importez-en une nouvelle.',
+      en: 'Every image on the site. Replacing a media file changes it everywhere it is used — to change just one place, remove the image (×) on that page and upload a new one.',
+    },
   },
   hooks: {
     afterChange: [revalidateHomeCollection],
@@ -24,10 +27,12 @@ export const Media: CollectionConfig = {
       name: 'alt',
       type: 'text',
       required: true,
-      label: 'Texte alternatif',
+      label: { fr: 'Texte alternatif', en: 'Alt text' },
       admin: {
-        description:
-          'Une courte description de l’image, lue par les lecteurs d’écran et Google. Exemple : « Open space avec cloisons vitrées ».',
+        description: {
+          fr: 'Une courte description de l’image, lue par les lecteurs d’écran et Google. Exemple : « Open space avec cloisons vitrées ».',
+          en: 'A short description of the image, read by screen readers and Google. Example: “Open-plan office with glass partitions”.',
+        },
       },
     },
   ],

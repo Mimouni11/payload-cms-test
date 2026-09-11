@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { GROUP, ORDER } from '@/admin/i18n'
 import { PROJECT_CATEGORIES } from '@/blocks/Projects/categories'
 import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 
@@ -22,8 +23,8 @@ const slugify = (value: string): string =>
 export const Projects: CollectionConfig = {
   slug: 'projects',
   labels: {
-    singular: 'Réalisation',
-    plural: 'Réalisations',
+    singular: { fr: 'Réalisation', en: 'Project' },
+    plural: { fr: 'Réalisations', en: 'Projects' },
   },
   access: {
     read: () => true,
@@ -32,11 +33,13 @@ export const Projects: CollectionConfig = {
     delete: ({ req: { user } }) => Boolean(user),
   },
   admin: {
-    group: 'Contenu',
+    group: GROUP.content,
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'city', 'featured', 'order'],
-    description:
-      'Visible sur : la page Nos projets (toutes), et le carrousel de la page d’accueil (uniquement celles cochées « Afficher sur la page d’accueil »).',
+    description: {
+      fr: 'Visible sur : la page Nos projets (toutes), et le carrousel de la page d’accueil (uniquement celles cochées « Afficher sur la page d’accueil »).',
+      en: 'Visible on: the Nos projets page (all of them), and the homepage carousel (only those ticked “Show on the homepage”).',
+    },
   },
   lockDocuments: false,
   hooks: {
@@ -51,7 +54,7 @@ export const Projects: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      label: 'Titre',
+      label: { fr: 'Titre', en: 'Title' },
       admin: { placeholder: 'EY Ernst & Young' },
     },
     {
@@ -59,11 +62,13 @@ export const Projects: CollectionConfig = {
       type: 'text',
       unique: true,
       index: true,
-      label: 'Identifiant URL',
+      label: { fr: 'Identifiant URL', en: 'URL slug' },
       admin: {
         position: 'sidebar',
-        description:
-          'Rempli automatiquement à partir du titre si vous le laissez vide. Sert à l’adresse de la page du projet.',
+        description: {
+          fr: 'Rempli automatiquement à partir du titre si vous le laissez vide. Sert à l’adresse de la page du projet.',
+          en: 'Filled in from the title if you leave it empty. Used for the project page’s address.',
+        },
       },
       hooks: {
         // Derived on save so every project has a stable URL from day one, even
@@ -77,11 +82,15 @@ export const Projects: CollectionConfig = {
     {
       name: 'category',
       type: 'select',
-      label: 'Catégorie',
+      label: { fr: 'Catégorie', en: 'Category' },
+      // Option labels stay French in both languages: they are the filter buttons
+      // on the public site, so they are content, not admin text.
       options: PROJECT_CATEGORIES.map(({ value, label }) => ({ value, label })),
       admin: {
-        description:
-          'Détermine les boutons de filtre de la page Nos projets. Un projet sans catégorie apparaît quand même dans « Tous les projets », mais aucun filtre ne le trouvera.',
+        description: {
+          fr: 'Détermine les boutons de filtre de la page Nos projets. Un projet sans catégorie apparaît quand même dans « Tous les projets », mais aucun filtre ne le trouvera.',
+          en: 'Drives the filter buttons on the Nos projets page. A project without a category still appears under « Tous les projets », but no filter will find it.',
+        },
       },
     },
     {
@@ -90,17 +99,20 @@ export const Projects: CollectionConfig = {
         {
           name: 'sector',
           type: 'text',
-          label: 'Secteur',
+          label: { fr: 'Secteur', en: 'Sector' },
           admin: {
             width: '50%',
             placeholder: 'Multinationale',
-            description: 'La ligne affichée sur la carte, avec vos propres mots. Ce n’est pas le filtre.',
+            description: {
+              fr: 'La ligne affichée sur la carte, avec vos propres mots. Ce n’est pas le filtre.',
+              en: 'The line shown on the card, in your own words. Not the filter.',
+            },
           },
         },
         {
           name: 'city',
           type: 'text',
-          label: 'Ville',
+          label: { fr: 'Ville', en: 'City' },
           admin: { width: '50%', placeholder: 'Tunis' },
         },
       ],
@@ -108,8 +120,13 @@ export const Projects: CollectionConfig = {
     {
       name: 'summary',
       type: 'textarea',
-      label: 'Résumé',
-      admin: { description: 'Une ou deux lignes, affichées sous le titre sur la carte.' },
+      label: { fr: 'Résumé', en: 'Summary' },
+      admin: {
+        description: {
+          fr: 'Une ou deux lignes, affichées sous le titre sur la carte.',
+          en: 'One or two lines, shown under the title on the card.',
+        },
+      },
     },
     {
       name: 'image',
@@ -123,31 +140,35 @@ export const Projects: CollectionConfig = {
       type: 'relationship',
       relationTo: 'services',
       hasMany: true,
-      label: 'Métiers',
+      label: { fr: 'Métiers', en: 'Services' },
       admin: {
-        description:
-          'Affichés en étiquettes sur la carte. Choisis dans la liste des Métiers pour que les noms restent toujours identiques.',
+        description: {
+          fr: 'Affichés en étiquettes sur la carte. Choisis dans la liste des Métiers pour que les noms restent toujours identiques.',
+          en: 'Shown as tags on the card. Picked from the Services list so the names always match.',
+        },
       },
     },
     {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
-      label: 'Afficher sur la page d’accueil',
+      label: { fr: 'Afficher sur la page d’accueil', en: 'Show on the homepage' },
       admin: {
         position: 'sidebar',
-        description:
-          'Seules les réalisations cochées apparaissent dans le carrousel de la page d’accueil.',
+        description: {
+          fr: 'Seules les réalisations cochées apparaissent dans le carrousel de la page d’accueil.',
+          en: 'Only ticked projects appear in the homepage carousel.',
+        },
       },
     },
     {
       name: 'order',
       type: 'number',
       defaultValue: 0,
-      label: 'Ordre d’affichage',
+      label: ORDER.label,
       admin: {
         position: 'sidebar',
-        description: 'Les plus petits numéros apparaissent en premier.',
+        description: ORDER.description,
       },
     },
   ],

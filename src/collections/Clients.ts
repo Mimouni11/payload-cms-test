@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { GROUP, ORDER } from '@/admin/i18n'
 import { revalidateHomeCollection } from '@/hooks/revalidateHome'
 
 /**
@@ -23,11 +24,13 @@ export const Clients: CollectionConfig = {
     delete: ({ req: { user } }) => Boolean(user),
   },
   admin: {
-    group: 'Contenu',
+    group: GROUP.content,
     useAsTitle: 'name',
     defaultColumns: ['name', 'order', 'updatedAt'],
-    description:
-      'Visible sur : le bandeau de logos sous la bannière, présent sur toutes les pages.',
+    description: {
+      fr: 'Visible sur : le bandeau de logos sous la bannière, présent sur toutes les pages.',
+      en: 'Visible on: the logo strip under the banner, on every page.',
+    },
   },
   lockDocuments: false,
   hooks: {
@@ -42,10 +45,13 @@ export const Clients: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
-      label: 'Nom',
+      label: { fr: 'Nom', en: 'Name' },
       admin: {
         placeholder: 'Inetum',
-        description: 'Sert aussi de texte alternatif au logo (lu par les lecteurs d’écran et Google).',
+        description: {
+          fr: 'Sert aussi de texte alternatif au logo (lu par les lecteurs d’écran et Google).',
+          en: 'Also used as the logo’s alt text (read by screen readers and Google).',
+        },
       },
     },
     {
@@ -55,27 +61,32 @@ export const Clients: CollectionConfig = {
       required: true,
       label: 'Logo',
       admin: {
-        description:
-          'Le bandeau affiche tous les logos à la même hauteur : importez-le recadré au plus près, car des marges en trop le font paraître plus petit que ses voisins. PNG transparent ou SVG.',
+        description: {
+          fr: 'Le bandeau affiche tous les logos à la même hauteur : importez-le recadré au plus près, car des marges en trop le font paraître plus petit que ses voisins. PNG transparent ou SVG.',
+          en: 'The strip shows every logo at the same height, so upload it trimmed tight — extra margins make it look smaller than its neighbours. Transparent PNG or SVG.',
+        },
       },
     },
     {
       name: 'website',
       type: 'text',
-      label: 'Site web',
+      label: { fr: 'Site web', en: 'Website' },
       admin: {
         placeholder: 'https://…',
-        description: 'Facultatif. Rend le logo cliquable.',
+        description: {
+          fr: 'Facultatif. Rend le logo cliquable.',
+          en: 'Optional. Makes the logo clickable.',
+        },
       },
     },
     {
       name: 'order',
       type: 'number',
       defaultValue: 0,
-      label: 'Ordre d’affichage',
+      label: ORDER.label,
       admin: {
         position: 'sidebar',
-        description: 'Les plus petits numéros apparaissent en premier.',
+        description: ORDER.description,
       },
     },
   ],

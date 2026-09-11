@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { GROUP } from '@/admin/i18n'
 import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
 
 /**
@@ -14,14 +15,16 @@ import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
  */
 export const FooterGlobal: GlobalConfig = {
   slug: 'footer',
-  label: 'Pied de page',
+  label: { fr: 'Pied de page', en: 'Footer' },
   access: {
     read: () => true,
   },
   admin: {
-    group: 'Tout le site',
-    description:
-      'Visible sur : le pied de page de toutes les pages. Les liens « Nos métiers » se remplissent tout seuls depuis la collection Métiers ; les coordonnées viennent de Coordonnées.',
+    group: GROUP.site,
+    description: {
+      fr: 'Visible sur : le pied de page de toutes les pages. Les liens « Nos métiers » se remplissent tout seuls depuis la collection Métiers ; les coordonnées viennent de Coordonnées.',
+      en: 'Visible on: the footer of every page. The « Nos métiers » links fill in automatically from the Services collection; the contact details come from Contact details.',
+    },
     components: {
       elements: {
         beforeDocumentControls: [
@@ -50,19 +53,24 @@ export const FooterGlobal: GlobalConfig = {
     {
       name: 'tagline',
       type: 'textarea',
-      label: 'Texte sous le logo',
+      label: { fr: 'Texte sous le logo', en: 'Text under the logo' },
       defaultValue:
         'Spécialiste tunisien de l’espace professionnel. Conception, fourniture et réalisation sous un même toit depuis 2008.',
     },
     {
       name: 'socials',
       type: 'array',
-      label: 'Réseaux sociaux',
+      label: { fr: 'Réseaux sociaux', en: 'Social networks' },
       maxRows: 6,
-      labels: { singular: 'Réseau', plural: 'Réseaux' },
+      labels: {
+        singular: { fr: 'Réseau', en: 'Network' },
+        plural: { fr: 'Réseaux', en: 'Networks' },
+      },
       admin: {
-        description:
-          'L’icône dépend de la plateforme choisie. Faites-les glisser pour changer l’ordre.',
+        description: {
+          fr: 'L’icône dépend de la plateforme choisie. Faites-les glisser pour changer l’ordre.',
+          en: 'The icon depends on the platform chosen. Drag them to reorder.',
+        },
       },
       fields: [
         {
@@ -72,7 +80,7 @@ export const FooterGlobal: GlobalConfig = {
               name: 'platform',
               type: 'select',
               required: true,
-              label: 'Plateforme',
+              label: { fr: 'Plateforme', en: 'Platform' },
               admin: { width: '40%' },
               // A fixed list, not a free icon field: each option maps to an icon
               // drawn in the component, so the row can never render a blank.
@@ -87,7 +95,7 @@ export const FooterGlobal: GlobalConfig = {
               name: 'url',
               type: 'text',
               required: true,
-              label: 'Lien',
+              label: { fr: 'Lien', en: 'Link' },
               admin: { width: '60%', placeholder: 'https://…' },
             },
           ],
@@ -100,24 +108,27 @@ export const FooterGlobal: GlobalConfig = {
         {
           name: 'navTitle',
           type: 'text',
-          label: 'Titre — colonne navigation',
+          label: { fr: 'Titre — colonne navigation', en: 'Heading — navigation column' },
           defaultValue: 'Navigation',
           admin: { width: '33%' },
         },
         {
           name: 'servicesTitle',
           type: 'text',
-          label: 'Titre — colonne métiers',
+          label: { fr: 'Titre — colonne métiers', en: 'Heading — services column' },
           defaultValue: 'Nos métiers',
           admin: {
             width: '33%',
-            description: 'Les liens de cette colonne viennent automatiquement de Métiers.',
+            description: {
+              fr: 'Les liens de cette colonne viennent automatiquement de Métiers.',
+              en: 'The links in this column come from Services automatically.',
+            },
           },
         },
         {
           name: 'contactTitle',
           type: 'text',
-          label: 'Titre — colonne contact',
+          label: { fr: 'Titre — colonne contact', en: 'Heading — contact column' },
           defaultValue: 'Contact',
           admin: { width: '34%' },
         },
@@ -126,9 +137,12 @@ export const FooterGlobal: GlobalConfig = {
     {
       name: 'navLinks',
       type: 'array',
-      label: 'Liens de navigation',
+      label: { fr: 'Liens de navigation', en: 'Navigation links' },
       maxRows: 10,
-      labels: { singular: 'Lien', plural: 'Liens' },
+      labels: {
+        singular: { fr: 'Lien', en: 'Link' },
+        plural: { fr: 'Liens', en: 'Links' },
+      },
       defaultValue: [
         { label: 'A propos', href: '#a-propos' },
         { label: 'Nos métiers', href: '#expertises' },
@@ -144,14 +158,14 @@ export const FooterGlobal: GlobalConfig = {
               name: 'label',
               type: 'text',
               required: true,
-              label: 'Texte',
+              label: { fr: 'Texte', en: 'Text' },
               admin: { width: '50%' },
             },
             {
               name: 'href',
               type: 'text',
               required: true,
-              label: 'Lien',
+              label: { fr: 'Lien', en: 'Link' },
               admin: { width: '50%', placeholder: '/projets' },
             },
           ],
@@ -161,7 +175,7 @@ export const FooterGlobal: GlobalConfig = {
     {
       name: 'legal',
       type: 'text',
-      label: 'Mention en bas de page',
+      label: { fr: 'Mention en bas de page', en: 'Line at the very bottom' },
       defaultValue: 'Crafted by BigArt | 2026',
     },
   ],

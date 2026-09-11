@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@payloadcms/ui'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 type Props = {
@@ -9,16 +10,25 @@ type Props = {
 
 type Phase = 'checking' | 'live' | 'publishing' | 'slow' | 'error'
 
+type Lang = 'fr' | 'en'
+
 const POLL_MS = 2000
 const GIVE_UP_MS = 60000
 
-const LABEL: Record<Phase, string> = {
-  checking: 'Vérification…',
-  live: 'Site à jour',
-  publishing: 'Publication en cours…',
-  slow: 'Toujours en cours — actualisez dans un instant',
-  error: 'Statut indisponible',
+// Custom components don't get Payload's { fr, en } label handling, so this picks
+// its own half from the language the user chose on their account page.
+const LABEL: Record<Phase, Record<Lang, string>> = {
+  checking: { fr: 'Vérification…', en: 'Checking…' },
+  live: { fr: 'Site à jour', en: 'Site up to date' },
+  publishing: { fr: 'Publication en cours…', en: 'Publishing…' },
+  slow: {
+    fr: 'Toujours en cours — actualisez dans un instant',
+    en: 'Still going — refresh in a moment',
+  },
+  error: { fr: 'Statut indisponible', en: 'Status unavailable' },
 }
+
+const VIEW_SITE: Record<Lang, string> = { fr: 'Voir le site', en: 'View the site' }
 
 const COLOUR: Record<Phase, string> = {
   checking: '#8d99ae',
@@ -47,6 +57,8 @@ const COLOUR: Record<Phase, string> = {
  * event is missed, and it is not coupled to PublishButton's internals.
  */
 export const PublishStatus: React.FC<Props> = ({ globalSlug }) => {
+  const { i18n } = useTranslation()
+  const lang: Lang = i18n.language === 'en' ? 'en' : 'fr'
   const [phase, setPhase] = useState<Phase>('checking')
   const pendingSince = useRef<number | null>(null)
 
@@ -121,10 +133,10 @@ export const PublishStatus: React.FC<Props> = ({ globalSlug }) => {
           width: 8,
         }}
       />
-      <span>{LABEL[phase]}</span>
+      <span>{LABEL[phase][lang]}</span>
       {phase === 'live' && (
         <a href="/" rel="noreferrer" style={{ textDecoration: 'underline' }} target="_blank">
-          Voir le site
+          {VIEW_SITE[lang]}
         </a>
       )}
     </div>

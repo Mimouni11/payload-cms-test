@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { GROUP } from '@/admin/i18n'
 import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
 
 /**
@@ -13,14 +14,16 @@ import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
  */
 export const SiteInfoGlobal: GlobalConfig = {
   slug: 'site-info',
-  label: 'Coordonnées',
+  label: { fr: 'Coordonnées', en: 'Contact details' },
   access: {
     read: () => true,
   },
   admin: {
-    group: 'Tout le site',
-    description:
-      'Visible sur : le pied de page de toutes les pages, et la section Contact de la page d’accueil (adresse, téléphone, e-mail et la carte).',
+    group: GROUP.site,
+    description: {
+      fr: 'Visible sur : le pied de page de toutes les pages, et la section Contact de la page d’accueil (adresse, téléphone, e-mail et la carte).',
+      en: 'Visible on: the footer of every page, and the Contact section of the homepage (address, phone, email and the map).',
+    },
     components: {
       elements: {
         beforeDocumentControls: [
@@ -49,13 +52,18 @@ export const SiteInfoGlobal: GlobalConfig = {
     {
       name: 'details',
       type: 'array',
-      label: 'Coordonnées',
+      label: { fr: 'Coordonnées', en: 'Contact details' },
       minRows: 1,
       maxRows: 8,
-      labels: { singular: 'Coordonnée', plural: 'Coordonnées' },
+      labels: {
+        singular: { fr: 'Coordonnée', en: 'Detail' },
+        plural: { fr: 'Coordonnées', en: 'Details' },
+      },
       admin: {
-        description:
-          'Affichées avec un titre et une icône dans la section Contact, et en simples lignes dans le pied de page. Faites-les glisser pour changer l’ordre.',
+        description: {
+          fr: 'Affichées avec un titre et une icône dans la section Contact, et en simples lignes dans le pied de page. Faites-les glisser pour changer l’ordre.',
+          en: 'Shown with a heading and icon in the Contact section, and as plain lines in the footer. Drag them to reorder.',
+        },
       },
       defaultValue: [
         { label: 'Adresse', value: 'Rue Fatma Ezzahra, Ariana Tunisie', icon: 'location' },
@@ -71,14 +79,14 @@ export const SiteInfoGlobal: GlobalConfig = {
               name: 'label',
               type: 'text',
               required: true,
-              label: 'Intitulé',
+              label: { fr: 'Intitulé', en: 'Label' },
               admin: { width: '30%' },
             },
             {
               name: 'value',
               type: 'text',
               required: true,
-              label: 'Valeur',
+              label: { fr: 'Valeur', en: 'Value' },
               admin: { width: '45%' },
             },
             {
@@ -86,15 +94,15 @@ export const SiteInfoGlobal: GlobalConfig = {
               type: 'select',
               required: true,
               defaultValue: 'location',
-              label: 'Icône',
+              label: { fr: 'Icône', en: 'Icon' },
               admin: { width: '25%' },
               // Fixed list: each maps to an icon drawn in the component, so a row
               // can never render without one.
               options: [
-                { label: 'Adresse', value: 'location' },
-                { label: 'Téléphone', value: 'phone' },
+                { label: { fr: 'Adresse', en: 'Address' }, value: 'location' },
+                { label: { fr: 'Téléphone', en: 'Phone' }, value: 'phone' },
                 { label: 'Email', value: 'mail' },
-                { label: 'Horaires', value: 'clock' },
+                { label: { fr: 'Horaires', en: 'Opening hours' }, value: 'clock' },
               ],
             },
           ],
@@ -103,9 +111,12 @@ export const SiteInfoGlobal: GlobalConfig = {
           name: 'inFooter',
           type: 'checkbox',
           defaultValue: true,
-          label: 'Afficher dans le pied de page',
+          label: { fr: 'Afficher dans le pied de page', en: 'Show in the footer' },
           admin: {
-            description: 'Les horaires sont en général laissés hors du pied de page.',
+            description: {
+              fr: 'Les horaires sont en général laissés hors du pied de page.',
+              en: 'Opening hours are usually left out of the footer.',
+            },
           },
         },
       ],
@@ -113,10 +124,12 @@ export const SiteInfoGlobal: GlobalConfig = {
     {
       name: 'mapQuery',
       type: 'text',
-      label: 'Adresse pour la carte',
+      label: { fr: 'Adresse pour la carte', en: 'Address for the map' },
       admin: {
-        description:
-          'L’adresse utilisée pour placer le repère sur la carte. Laissez vide pour utiliser la première adresse ci-dessus.',
+        description: {
+          fr: 'L’adresse utilisée pour placer le repère sur la carte. Laissez vide pour utiliser la première adresse ci-dessus.',
+          en: 'The address used to place the pin on the map. Leave empty to use the first address above.',
+        },
         placeholder: 'Rue Fatma Ezzahra, Ariana, Tunisie',
       },
     },

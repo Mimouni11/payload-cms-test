@@ -1,13 +1,15 @@
 import type { CollectionConfig } from 'payload'
 
+import { GROUP } from '@/admin/i18n'
+
 export const Users: CollectionConfig = {
   slug: 'users',
   labels: {
-    singular: 'Utilisateur',
-    plural: 'Utilisateurs',
+    singular: { fr: 'Utilisateur', en: 'User' },
+    plural: { fr: 'Utilisateurs', en: 'Users' },
   },
   admin: {
-    group: 'Administration',
+    group: GROUP.admin,
     useAsTitle: 'email',
   },
   auth: true,

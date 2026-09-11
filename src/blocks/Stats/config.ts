@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { GROUP, OPTIONAL } from '@/admin/i18n'
 import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
 
 /**
@@ -11,13 +12,16 @@ import { revalidateHomeGlobal } from '@/hooks/revalidateHome'
  */
 export const StatsGlobal: GlobalConfig = {
   slug: 'stats',
-  label: 'Chiffres clés',
+  label: { fr: 'Chiffres clés', en: 'Key figures' },
   access: {
     read: () => true,
   },
   admin: {
-    group: 'Page d’accueil',
-    description: 'Visible sur : la page d’accueil uniquement — la bande de chiffres.',
+    group: GROUP.home,
+    description: {
+      fr: 'Visible sur : la page d’accueil uniquement — la bande de chiffres.',
+      en: 'Visible on: the homepage only — the band of figures.',
+    },
     components: {
       elements: {
         beforeDocumentControls: [
@@ -51,13 +55,18 @@ export const StatsGlobal: GlobalConfig = {
     {
       name: 'items',
       type: 'array',
-      label: 'Chiffres',
+      label: { fr: 'Chiffres', en: 'Figures' },
       minRows: 1,
       maxRows: 8,
-      labels: { singular: 'Chiffre', plural: 'Chiffres' },
+      labels: {
+        singular: { fr: 'Chiffre', en: 'Figure' },
+        plural: { fr: 'Chiffres', en: 'Figures' },
+      },
       admin: {
-        description:
-          'Affichés de gauche à droite dans la bande rouge. Faites-les glisser pour changer l’ordre.',
+        description: {
+          fr: 'Affichés de gauche à droite dans la bande rouge. Faites-les glisser pour changer l’ordre.',
+          en: 'Shown left to right in the red band. Drag them to reorder.',
+        },
       },
       fields: [
         {
@@ -66,29 +75,32 @@ export const StatsGlobal: GlobalConfig = {
             {
               name: 'prefix',
               type: 'text',
-              label: 'Préfixe',
-              admin: { width: '20%', placeholder: '+', description: 'Facultatif.' },
+              label: { fr: 'Préfixe', en: 'Prefix' },
+              admin: { width: '20%', placeholder: '+', description: OPTIONAL },
             },
             {
               name: 'value',
               type: 'number',
               required: true,
-              label: 'Nombre',
+              label: { fr: 'Nombre', en: 'Number' },
               admin: {
                 width: '30%',
-                description: 'Chiffres uniquement : c’est ce nombre qui s’anime.',
+                description: {
+                  fr: 'Chiffres uniquement : c’est ce nombre qui s’anime.',
+                  en: 'Digits only: this is the number that animates.',
+                },
               },
             },
             {
               name: 'suffix',
               type: 'text',
-              label: 'Suffixe',
-              admin: { width: '20%', placeholder: 'k', description: 'Facultatif.' },
+              label: { fr: 'Suffixe', en: 'Suffix' },
+              admin: { width: '20%', placeholder: 'k', description: OPTIONAL },
             },
             {
               name: 'decimals',
               type: 'number',
-              label: 'Décimales',
+              label: { fr: 'Décimales', en: 'Decimals' },
               defaultValue: 0,
               min: 0,
               max: 2,
@@ -100,7 +112,7 @@ export const StatsGlobal: GlobalConfig = {
           name: 'label',
           type: 'text',
           required: true,
-          label: 'Légende',
+          label: { fr: 'Légende', en: 'Caption' },
           admin: { placeholder: 'ans d’expertise' },
         },
       ],
