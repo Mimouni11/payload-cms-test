@@ -3,7 +3,8 @@ export type HeroProps = {
   badge?: string
   title: string
   lede?: string
-  cta: {
+  /** Omit for a hero that ends on the lede — the Nos métiers frame has no button. */
+  cta?: {
     label: string
     href: string
   }

@@ -16,7 +16,7 @@ export const navbarPlaceholder: NavbarProps = {
   },
   links: [
     { label: 'À propos', href: '#a-propos' },
-    { label: 'Nos métiers', href: '#metiers' },
+    { label: 'Nos métiers', href: '/metiers' },
     { label: 'Nos projets', href: '/projets' },
     { label: 'Actualités', href: '#actualites' },
   ],
