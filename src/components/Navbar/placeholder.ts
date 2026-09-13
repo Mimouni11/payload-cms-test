@@ -20,5 +20,5 @@ export const navbarPlaceholder: NavbarProps = {
     { label: 'Nos projets', href: '/projets' },
     { label: 'Actualités', href: '#actualites' },
   ],
-  cta: { label: 'Parlons de votre projet', href: '#contact' },
+  cta: { label: 'Parlons de votre projet', href: '/contact' },
 }
